@@ -1,13 +1,15 @@
 ---
 title: <项目名> CURRENT
+form: state
+topic: [overview]
 updated: YYYY-MM-DD
-project: <项目名>
 status: current
 tags:
   - current
   - team-entry
 aliases:
   - 当前状态
+target_lines: 200
 ---
 
 # <项目名> CURRENT
@@ -60,7 +62,7 @@ aliases:
 
 ## 下一步
 
-详见 `NEXT.md`。
+详见 `NEXT.md`（战略方向）和 `TODO.md`（事务级任务）。
 
 ## 链接
 

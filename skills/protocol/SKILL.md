@@ -1,7 +1,7 @@
 ---
 name: protocol
 description: |
-  OPC (One-Person-Company) collective team collaboration protocol. Load when any of these is true: (1) `obsidian-docs/` exists in cwd or an ancestor dir; (2) `~/.team-docs-config` exists; (3) project's `AGENTS.md` or `CLAUDE.md` references this protocol or an `obsidian-docs/` path; (4) user mentions handoff, checkpoint, CURRENT.md, NEXT.md, RISKS.md, `_handoffs/`, team-collab, team-docs-sync, or invokes `/handoff`/`/checkpoint`; (5) user asks about team docs workflow or multi-OPC coordination. Provides start/mid/end-session workflow, handoff file format, CURRENT/NEXT/RISKS templates, git sync (pull→commit→push) with hard constraints (no force push, no `--no-verify`, no fabricated empty handoffs), conflict handling decision tree, gitleaks false-positive handling, cross-agent reference behavior.
+  OPC (One-Person-Company) collective team collaboration protocol. Load when any of: (1) `obsidian-docs/` exists in cwd or ancestor; (2) `~/.team-docs-config` exists; (3) project `AGENTS.md`/`CLAUDE.md` references this protocol or an `obsidian-docs/` path; (4) user mentions handoff, checkpoint, CURRENT.md, NEXT.md, RISKS.md, TODO.md, `_handoffs/`, team-collab, or invokes `/handoff`/`/checkpoint`; (5) user asks about team docs workflow, multi-OPC coordination, doc standards, or task ownership. Provides: start/mid/end-session workflow; CURRENT/NEXT/RISKS/TODO state quartet with @owner task-claim mechanic (atomic commit+push lock); handoff file format; form/topic doc taxonomy (6 forms) with frontmatter+naming rules; git sync with hard constraints (no force push, no `--no-verify`, no fabricated handoffs, no touching others' TODOs); conflict handling decision tree; gitleaks false-positive handling; cross-agent reference behavior.
 ---
 
 # Team Collaboration Protocol
@@ -15,11 +15,13 @@ When this skill is loaded, the user is working in a project where:
 - **Code** lives in a code repository (typically GitHub), accessed from `~/projects/<project>/`.
 - **Docs** live in a separate docs repository (typically GitLab, invite-only), accessed from `~/projects/<project>/obsidian-docs/` — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path.
 - **Project-level instructions** for agents live in `AGENTS.md` at the code repo root (cross-agent standard per agents.md). `CLAUDE.md`, if present, is typically a thin import pointer to `AGENTS.md`.
-- **Shared docs state** is expressed in three files at the docs repo root:
+- **Shared docs state** is expressed in **four** files at the docs repo root (the "state quartet"):
   - `CURRENT.md` — one-screen project status (the team's single reading entry point)
-  - `NEXT.md` — next actions + open decisions
+  - `NEXT.md` — strategic next actions + open decisions (coarse-grained)
   - `RISKS.md` — active risks + archived-resolved ones
+  - `TODO.md` — task-level checklist with explicit `@owner` claims (fine-grained)
 - **Audit trail** of each AI session lives in `obsidian-docs/_handoffs/YYYY-MM-DD-HHMM-<topic>.md` (append-only).
+- **Docs follow a strict form/topic taxonomy** — see "Document standards" section below.
 
 ## When you arrive in a session
 
@@ -47,7 +49,8 @@ Read in this order:
 
 1. `obsidian-docs/CURRENT.md` — current state, one screen
 2. `obsidian-docs/RISKS.md` — active risks (avoid the pits others recorded)
-3. `obsidian-docs/NEXT.md` — next actions and undecided items
+3. `obsidian-docs/NEXT.md` — strategic next actions and undecided items
+4. `obsidian-docs/TODO.md` — task-level todos with owner claims (see "TODO.md ownership" section below)
 4. Optionally recent 2-3 entries in `obsidian-docs/_handoffs/` — what happened recently
 
 If the user gave you a task in their prompt that isn't in `NEXT.md`, **pause and align** with them before acting — the task may be mid-flight from elsewhere or out of scope for this session.
@@ -89,6 +92,7 @@ Read:
 - `obsidian-docs/CURRENT.md`
 - `obsidian-docs/NEXT.md`
 - `obsidian-docs/RISKS.md`
+- `obsidian-docs/TODO.md`
 
 ### Step 4: assess session delta
 
@@ -144,13 +148,19 @@ New risks found, or previously-active risks resolved. New risks also go into `RI
 1-5 ordered actions at a granularity that lets the next person (human or AI) start immediately.
 ```
 
-### Step 6: update CURRENT / NEXT / RISKS (in-place, minimal diff)
+### Step 6: update state quartet (CURRENT / NEXT / RISKS / TODO, in-place, minimal diff)
 
 **Edit only the sections that changed** — do not rewrite entire files.
 
 - `CURRENT.md`: milestones / active branch / recent completions / current focus, if any changed
 - `NEXT.md`: strike finished items; append new next steps; move resolved decisions out to `CURRENT.md` or an ADR
 - `RISKS.md`: add new risks to the active table; move resolved ones to the archive section
+- `TODO.md`:
+  - Task(s) you finished this session: flip `[ ]` → `[x]`, move from "进行中" to "最近完成", keep `@owner`, replace timestamp with completion date
+  - Task(s) you made progress on but didn't finish: stay in "进行中", you may add a sub-note
+  - Task(s) you newly encountered blockers on: move to "阻塞" with a `blocked by: <reason>` annotation
+  - Task(s) newly discovered that need doing later: append to "待办"
+  - **DO NOT touch tasks whose `@owner` is not you**. Not even `[x]` them if they look done. At most, leave a note suggesting the owner verify.
 
 ### Step 7: sync to remote (strict)
 
@@ -173,7 +183,7 @@ In the docs repo:
 ### Step 8: concise final report (≤ 15 lines)
 
 - Handoff file path.
-- Which sections of CURRENT / NEXT / RISKS changed (skip unchanged).
+- Which sections of CURRENT / NEXT / RISKS / TODO changed (skip unchanged).
 - Docs repo commit hash + push result.
 - Anything the user should do next (resolve a conflict, check something, approve a migration, etc.).
 
@@ -183,16 +193,16 @@ Mid-session snapshot. **File-level only — no git operations.**
 
 ### Steps
 
-1. Read `obsidian-docs/CURRENT.md`, `NEXT.md`, `RISKS.md`.
+1. Read `obsidian-docs/CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`.
 2. Assess session state so far from `git status` + `git diff` + conversation.
-3. Update **only** CURRENT / NEXT / RISKS sections that changed — in place, minimal diff. No append-handoff.
+3. Update **only** sections of the state quartet that changed — in place, minimal diff. No append-handoff.
 4. **Do not** `git add`, commit, push, or pull. Checkpoint is a working-tree snapshot, nothing leaves local.
 5. One-line report per file changed: which section + what changed.
 
 ### Difference from `/handoff`
 
-- `/handoff` = end-of-session: pull + append handoff + update triad + commit + rebase + push
-- `/checkpoint` = mid-session: update triad only, zero git ops
+- `/handoff` = end-of-session: pull + append handoff + update state quartet + commit + rebase + push
+- `/checkpoint` = mid-session: update state quartet only, zero git ops
 
 Long session can have multiple checkpoints. Final `/handoff` still runs at end.
 
@@ -231,6 +241,8 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
 
 ## Hard constraints (violating these = stop immediately)
 
+### Git-level (sync, pushes, secrets)
+
 1. **Never force push**. Not `--force`, not `--force-with-lease`, not `push -f`.
 2. **Never `--no-verify`**. The gitleaks hook is the last line of defense for secret leaks.
 3. **Never retry failed git operations automatically**. One failure → stop and report.
@@ -244,17 +256,146 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
    - Unannounced product commercial secrets
 6. **Never `git add .`** in the docs repo. Always precise-add by filename.
 7. **Never commit `*.canvas`, `*.base`, `.obsidian/`, `.trash/`, `.DS_Store` into the docs repo** — these are either oversized binary-ish, per-user config, or OS cruft. If they slip past `.gitignore`, fix `.gitignore` rather than committing.
-8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
+8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
+
+### Document-standards-level (form, topic, frontmatter, naming)
+
+9. **Every `.md` you create or substantially edit must have frontmatter** with at least these fields:
+   ```yaml
+   ---
+   title: <clear short title>
+   form: state | trace | decision | design | reference | index
+   updated: YYYY-MM-DD
+   status: draft | active | deprecated | archived
+   tags: [<at least one>]
+   ---
+   ```
+   If creating a new doc and you can't commit to a `form`, **stop and ask the user** which form fits.
+10. **`form` value must match the doc's structure and lifecycle**. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation — flag it.
+11. **Naming must follow the form's convention**:
+    - `state` → uppercase no prefix (`CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`)
+    - `trace` → `YYYY-MM-DD[-HHMM]-<kebab-topic>.md`
+    - `decision` → `ADR-NNN-<slug>.md` or entries inside `决策日志.md`
+    - `design` → semantic name, optionally two-digit prefix `NN-<name>.md` for ordered series; `OVERVIEW.md` / `00-项目概览.md` for the entry
+    - `reference` → semantic name
+    - `index` → `README.md` or `00_INDEX.md`
+12. **Refuse to create these filenames**: `草稿.md`, `未命名*.md`, `随笔.md`, `tmp_*.md`, `test*.md` (unless actually a test file for code), `20260420_xxx.md` (wrong date format). Suggest a valid name instead.
+13. **trace and decision forms are append-only on history**. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be rewritten — fix typos only, never semantic content. To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
+14. **One thing per file** for `trace` and `decision` forms — one session per handoff, one change topic per devlog, one decision per ADR.
+15. **When modifying any doc, update `updated: YYYY-MM-DD`** in its frontmatter.
+16. **`state` form docs (CURRENT/NEXT/RISKS/TODO) must stay ≤ ~300 lines**. Over 2× that, warn the user and propose archiving old content to `archive/`.
+17. **Every project must have**: `README.md` (index), at least one `form: design` doc with `topic: positioning` or `topic: overview` (e.g. `OVERVIEW.md`), state quartet, `_handoffs/`, `开发日志/` (or `devlog/`), `决策日志.md` (or `ADR/` dir), and `archive/`. If any is missing when you enter a project, flag it.
+
+### TODO.md ownership (防 race condition)
+
+18. **Before starting any TODO task**, follow the claim flow (see "TODO.md ownership" section). Check ownership first, claim atomically via commit+push, never take on a task without verifying you hold the lock.
+19. **Never modify a TODO line whose `@owner` is not you** — neither content, nor state, nor `[x]`. Even if the task "looks done", the rightful owner makes that call.
+20. **Claiming is not lazy-load**. Move-to-进行中 must be immediately followed by `git commit` + `git push`. No "claim first, push later" — that invites race conditions.
+21. **Claim push conflicts = do not auto-grab**. If your claim push is rejected because someone else claimed the same task, abort, inform the user, let them coordinate — never `--force` to win the race.
+
+## Document standards (the full picture)
+
+Form/topic dual-axis, required baseline, naming — the single source of truth is the human-readable `07-文档组织规范.md` in the team playbook. Hard constraints #9–#17 above encode the subset an AI must enforce silently.
+
+**The 6 forms** and their structure:
+
+| form | structure | mutable? | target lines |
+|------|-----------|----------|--------------|
+| `state` | snapshot, rewritable | yes | <300 |
+| `trace` | timestamped append-only log | **never rewrite history** | 100-300/entry |
+| `decision` | recorded decisions | **supersede, don't edit** | 50-200/entry |
+| `design` | narrative explanation | major revisions OK | 300-1500 |
+| `reference` | lookup manual | update as needed | 200-800 |
+| `index` | navigation | update on structure change | 50-200 |
+
+**Topic is free-form** (recommended words: `positioning`, `overview`, `product`, `requirements`, `architecture`, `modules`, `implementation`, `research`, `benchmark`, `experiment`, `ops`, `external`, `self`), expressed as `topic: [word1, word2]` in frontmatter.
+
+**Required baseline for every team project**:
+- `README.md` (form=index)
+- `OVERVIEW.md` or equivalent (form=design, topic contains `positioning` or `overview`)
+- `CURRENT.md` / `NEXT.md` / `RISKS.md` / `TODO.md` (form=state, four-file quartet)
+- `_handoffs/` and `开发日志/` (form=trace)
+- `决策日志.md` or `ADR/NNN-*.md` (form=decision)
+- `archive/`
+
+## TODO.md ownership (full claim flow)
+
+TODO.md has four sections. Each section has rules:
+
+```markdown
+## 进行中
+- [ ] <task> @<owner> since YYYY-MM-DD [other metadata]
+
+## 阻塞
+- [ ] <task> @<owner> since YYYY-MM-DD (blocked by: <reason>)
+
+## 待办（未认领，先到先得）
+- [ ] <task>                  # no @owner = unclaimed
+
+## 最近完成
+- [x] <task> @<owner> YYYY-MM-DD
+```
+
+### Before starting any TODO work
+
+1. `cd obsidian-docs && git pull --rebase`
+2. Locate the target line in TODO.md.
+3. Branch:
+   - **In 进行中, `@owner` is you** → proceed.
+   - **In 进行中, `@owner` is someone else** → STOP. Report: "TODO `<task>` is claimed by `@xxx` since `<date>`. Do you want to (a) coordinate with them, (b) wait for them to release, or (c) forcibly reassign? I won't proceed without your decision."
+   - **In 阻塞** → STOP. Report the blocker.
+   - **In 待办** → execute claim flow (below).
+   - **Not in TODO.md at all** → STOP. Ask user if they want to add it first.
+
+### Claim flow (atomic, lock-style)
+
+1. Remove the line from `## 待办`.
+2. Append to `## 进行中`: `- [ ] <original-text> @<user> since <today>` plus any metadata.
+3. `git add TODO.md`
+4. `git commit -m "chore(todo): claim \"<short task>\" @<user>"`
+5. `git push`
+6. **If push rejected**: `git pull --rebase` then retry push. If the rebase hits a conflict (meaning someone else claimed concurrently), **abort**, inform user, do NOT auto-retake.
+7. **If push succeeds**: the claim is yours, proceed to do the work.
+
+Determine `<user>` from `git config user.name` or the conversation context if the user explicitly identifies themselves. If unsure, ask before claiming.
+
+### During work
+
+- Progress updates go in `## 最近完成` only when tasks are actually done (`[x]`), not mid-work.
+- If you discover a task you took on is bigger than expected and should split: add sub-tasks to `## 进行中` under the parent (indented), each with `@you since <today>`. Keep parent as umbrella.
+
+### Completion (at `/handoff` time)
+
+For tasks YOU own that finished this session:
+
+1. Flip `[ ]` → `[x]`.
+2. Move from `## 进行中` to `## 最近完成`.
+3. Replace `since <start-date>` with `<completion-date>`.
+4. Keep `@owner` unchanged (it's your audit trail).
+
+For tasks YOU own that didn't finish: leave in `## 进行中`; optionally add a sub-note like `  └─ completed sub-tasks X of Y; blocker: ...`.
+
+For tasks YOU don't own: **don't touch**. If you observe evidence their task is done, leave a comment for the owner but don't mark `[x]` yourself.
+
+### Stale claim release (etiquette, not enforced)
+
+A 进行中 entry whose `since` is >14 days old may be re-claimed by someone else:
+
+1. Manual: edit the line, replace `@old-owner since <old-date>` with `@new-owner since <today>`.
+2. Commit message: `chore(todo): re-claim stale TODO from @old-owner (idle 14d)`.
+3. **Recommended etiquette**: message the original owner on Feishu/Slack first (not technically required, but rude to skip).
 
 ## Templates
 
-See the `templates/` directory in this skill for copy-pastable clean starting points:
+See the `templates/` directory in this skill for copy-pastable clean starting points. All templates include the required frontmatter (title / form / topic / updated / status / tags) out of the box.
 
-- `templates/CURRENT.md` — one-screen status structure
-- `templates/NEXT.md` — next actions + undecided items structure
-- `templates/RISKS.md` — active + archive structure
-- `templates/handoff.md` — handoff file frontmatter + sections
-- `templates/ADR.md` — architecture decision record
+- `templates/OVERVIEW.md` — project narrative entry (form=design, topic=[positioning, overview])
+- `templates/CURRENT.md` — one-screen status (form=state)
+- `templates/NEXT.md` — strategic next actions + undecided items (form=state)
+- `templates/RISKS.md` — active + archive (form=state)
+- `templates/TODO.md` — task quartet with `@owner` claim mechanic (form=state)
+- `templates/handoff.md` — handoff frontmatter + sections (form=trace)
+- `templates/ADR.md` — architecture decision record (form=decision)
 
 ## Scripts
 
@@ -264,7 +405,9 @@ See the `scripts/` directory:
 
 ## Rationale links (for curious agents and humans)
 
-- The triad CURRENT/NEXT/RISKS is a compression of the team's full devlog into a one-screen status that anyone can read in a minute — it's the heart of the protocol.
+- The state quartet CURRENT/NEXT/RISKS/TODO compresses the team's full devlog into four one-screen reads — it's the heart of the protocol. Each has a distinct role: project state / strategic direction / risks / task-level work tracking with ownership.
 - `_handoffs/` append-only means parallel sessions never conflict on the audit trail.
+- TODO ownership with immediate push is a distributed lock pattern — git's existing push-then-pull conflict detection gives us race-condition protection for free, without a central task server.
 - gitleaks + hard constraints around `--no-verify` come from the observation that an accidental push of a secret to a private repo is effectively a permanent leak (all collaborators' clones preserve history) — prevention is orders of magnitude cheaper than recovery.
 - AGENTS.md at the project level is the cross-agent open standard (agents.md); `CLAUDE.md` if present is a thin `@./AGENTS.md` import pointer for Claude Code, keeping one source of truth.
+- Form/topic dual-axis separates "what's the document's structural role" from "what's it about", letting the same 6-form taxonomy apply to research, product, infra projects alike — the main protocol enforces form, project-specific topics are free.

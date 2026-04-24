@@ -1,3 +1,18 @@
+<!--
+此模板是**单条 ADR** 的结构。实际使用时两种方式之一：
+(1) 单文件一条 ADR：文件名 `ADR-NNN-<slug>.md`，加 frontmatter:
+    ---
+    title: ADR-NNN <决策标题>
+    form: decision
+    topic: [<具体决策领域，如 architecture / product / ops>]
+    updated: YYYY-MM-DD
+    status: proposed | accepted | deprecated | superseded-by-ADR-XXX
+    tags: [adr]
+    ---
+(2) 集中到一个 `决策日志.md`：每条 ADR 用下面 `# ADR-NNN` 一级标题分节，
+    决策日志.md 整体 frontmatter 用 form=decision。
+-->
+
 # ADR-NNN：<决策标题>
 
 - **日期**：YYYY-MM-DD

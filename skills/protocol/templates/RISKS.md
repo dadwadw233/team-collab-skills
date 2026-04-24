@@ -1,10 +1,12 @@
 ---
 title: <项目名> RISKS
+form: state
+topic: [implementation]
 updated: YYYY-MM-DD
-project: <项目名>
 status: current
 tags:
   - risks
+target_lines: 300
 ---
 
 # <项目名> RISKS

@@ -1,16 +1,19 @@
 ---
 title: <项目名> NEXT
+form: state
+topic: [implementation]
 updated: YYYY-MM-DD
-project: <项目名>
 status: current
 tags:
   - next
+target_lines: 300
 ---
 
 # <项目名> NEXT
 
 > [!summary]
-> **下一步要做什么**，以及当前未决的决策。每次 session 结束时更新：完成项移除；新增下一步追加；决策有结论时移到 CURRENT 或 ADR。
+> **战略下一步 + 未决决策**（粗粒度，区别于 [[TODO]] 的细粒度事务清单）。
+> 每次 session 结束时更新：完成项移除；新增下一步追加；决策有结论时移到 CURRENT 或 ADR。
 
 ## 下一步（有序）
 
