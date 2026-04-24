@@ -1,13 +1,7 @@
 ---
 name: protocol
 description: |
-  Team collaboration protocol for OPC (One-Person-Company) collectives. Load this skill whenever ANY of the following is true:
-  (1) the current working directory or any ancestor contains `obsidian-docs/` (as a symlink or a subdirectory with its own `.git`);
-  (2) the current project's code repo contains `AGENTS.md` or `CLAUDE.md` referencing a team collab protocol or an `obsidian-docs/` path;
-  (3) the user's home directory contains `~/.team-docs-config`;
-  (4) the user mentions `handoff`, `checkpoint`, `CURRENT.md`, `NEXT.md`, `RISKS.md`, `_handoffs/`, `team-collab`, `team-docs-sync`, or invokes `/handoff` / `/checkpoint` slash commands;
-  (5) the user explicitly asks about team collaboration protocol, docs repo workflow, or multi-OPC coordination.
-  This skill provides: start-of-session / mid-session / end-of-session workflow, handoff file format, CURRENT/NEXT/RISKS structure, git sync (pull → commit → push) with hard constraints (no force push, no `--no-verify`, no fabricated empty handoffs), conflict handling decision tree, gitleaks false-positive handling, and cross-agent reference behavior.
+  OPC (One-Person-Company) collective team collaboration protocol. Load when any of these is true: (1) `obsidian-docs/` exists in cwd or an ancestor dir; (2) `~/.team-docs-config` exists; (3) project's `AGENTS.md` or `CLAUDE.md` references this protocol or an `obsidian-docs/` path; (4) user mentions handoff, checkpoint, CURRENT.md, NEXT.md, RISKS.md, `_handoffs/`, team-collab, team-docs-sync, or invokes `/handoff`/`/checkpoint`; (5) user asks about team docs workflow or multi-OPC coordination. Provides start/mid/end-session workflow, handoff file format, CURRENT/NEXT/RISKS templates, git sync (pull→commit→push) with hard constraints (no force push, no `--no-verify`, no fabricated empty handoffs), conflict handling decision tree, gitleaks false-positive handling, cross-agent reference behavior.
 ---
 
 # Team Collaboration Protocol
