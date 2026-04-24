@@ -1,0 +1,15 @@
+{
+  "name": "team-collab-skills",
+  "owner": {
+    "name": "Yuanhong Yu",
+    "url": "https://github.com/dadwadw233"
+  },
+  "plugins": [
+    {
+      "name": "team-collab",
+      "source": "./",
+      "description": "Team collaboration protocol for OPC (One-Person-Company) collectives. Provides handoff/checkpoint flow, CURRENT/NEXT/RISKS templates, git sync conventions, and hard constraints for AI agents working in team-docs-config projects.",
+      "version": "0.1.0"
+    }
+  ]
+}
