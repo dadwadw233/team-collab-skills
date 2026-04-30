@@ -1,7 +1,7 @@
 ---
 name: protocol
 description: |
-  OPC (One-Person-Company) collective team collaboration protocol. Load when any of: (1) `obsidian-docs/` exists in cwd or ancestor; (2) `~/.team-docs-config` exists; (3) project `AGENTS.md`/`CLAUDE.md` references this protocol or an `obsidian-docs/` path; (4) user mentions handoff, checkpoint, CURRENT.md, NEXT.md, RISKS.md, TODO.md, `_handoffs/`, team-collab, or invokes `/handoff`/`/checkpoint`; (5) user asks about team docs workflow, multi-OPC coordination, doc standards, or task ownership. Provides: start/mid/end-session workflow; CURRENT/NEXT/RISKS/TODO state quartet with @owner task-claim mechanic (atomic commit+push lock); handoff file format; form/topic doc taxonomy (6 forms) with frontmatter+naming rules; git sync with hard constraints (no force push, no `--no-verify`, no fabricated handoffs, no touching others' TODOs); conflict handling decision tree; gitleaks false-positive handling; cross-agent reference behavior.
+  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, or project docs normalization. Do not load solely because `~/.team-docs-config` exists.
 ---
 
 # Team Collaboration Protocol
@@ -26,6 +26,21 @@ When this skill is loaded, the user is working in a project where:
 - **Audit trail** of each AI session lives in `obsidian-docs/_handoffs/YYYY-MM-DD-HHMM-<topic>.md` (append-only).
 - **Personal dev records** must live in `obsidian-docs/开发记录/<用户名>/YYYY-MM-DD-<topic>.md`. This path is mandatory; do not create new top-level `开发日志/`, `devlog/`, or mixed-author devlog files.
 - **Docs follow a strict form/topic taxonomy** — see "Document standards" section below.
+
+## Activation signals
+
+Load this skill only from a strong team-project signal or an explicit user request.
+
+Strong signals:
+- The current directory or an ancestor contains `obsidian-docs/`.
+- The current repo's `AGENTS.md` or `CLAUDE.md` references this protocol, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
+- The current directory is inside a path listed in `~/.team-docs-config`.
+- The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, docs repo audit/normalization, or new-member docs onboarding.
+
+Weak signal:
+- `~/.team-docs-config` exists somewhere on the machine.
+
+Do **not** load or enforce this full protocol solely from the weak signal. Many users keep that file globally after joining one team project; it must not make unrelated repos inherit team docs behavior.
 
 ## When you arrive in a session
 

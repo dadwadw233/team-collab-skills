@@ -19,7 +19,7 @@ claude plugin marketplace add dadwadw233/team-collab-skills
 claude plugin install team-collab@team-collab-skills
 ```
 
-Skill becomes available as `team-collab:protocol`. Claude auto-loads it when it detects trigger conditions (see SKILL.md description).
+Skill becomes available as `team-collab:protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs. Existence of `~/.team-docs-config` alone is intentionally not enough.
 
 ### Other agents (Codex CLI, OpenCode, Cursor, VSCode, Cline, Continue, Gemini CLI)
 
