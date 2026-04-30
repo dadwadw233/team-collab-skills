@@ -75,4 +75,4 @@ tags:
 - PR: #<番号>
 - Issue: #<番号>
 - 相关 ADR: `docs/decisions/NNNN-<slug>.md`
-- 相关 devlog: `obsidian-docs/开发记录/<文件>.md`
+- 相关 devlog: `obsidian-docs/开发记录/<用户名>/<文件>.md`

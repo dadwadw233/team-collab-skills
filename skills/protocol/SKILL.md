@@ -14,6 +14,9 @@ When this skill is loaded, the user is working in a project where:
 
 - **Code** lives in a code repository (typically GitHub), accessed from `~/projects/<project>/`.
 - **Docs** live in a separate docs repository (typically GitLab, invite-only), accessed from `~/projects/<project>/obsidian-docs/` — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path.
+- **Repository governance** is split by purpose:
+  - GitHub code repo: `main` is protected; code changes go through PR; never force-push `main`; PRs may request Codex/Copilot review but humans decide.
+  - GitLab docs repo: `main` is protected but maintainers may direct-push; high-level shared docs go through MR; personal process records may be direct-pushed.
 - **Project-level instructions** for agents live in `AGENTS.md` at the code repo root (cross-agent standard per agents.md). `CLAUDE.md`, if present, is typically a thin import pointer to `AGENTS.md`.
 - **Shared docs state** is expressed in **four** files at the docs repo root (the "state quartet"):
   - `CURRENT.md` — one-screen project status (the team's single reading entry point)
@@ -21,6 +24,7 @@ When this skill is loaded, the user is working in a project where:
   - `RISKS.md` — active risks + archived-resolved ones
   - `TODO.md` — task-level checklist with explicit `@owner` claims (fine-grained)
 - **Audit trail** of each AI session lives in `obsidian-docs/_handoffs/YYYY-MM-DD-HHMM-<topic>.md` (append-only).
+- **Personal dev records** must live in `obsidian-docs/开发记录/<用户名>/YYYY-MM-DD-<topic>.md`. This path is mandatory; do not create new top-level `开发日志/`, `devlog/`, or mixed-author devlog files.
 - **Docs follow a strict form/topic taxonomy** — see "Document standards" section below.
 
 ## When you arrive in a session
@@ -168,7 +172,7 @@ In the docs repo:
 
 1. **Precise `git add`** — do not `git add .` (would catch `.obsidian/workspace.json` etc if `.gitignore` missed it):
    ```bash
-   git add CURRENT.md NEXT.md RISKS.md _handoffs/ 开发记录/ <any other paths you touched>
+   git add CURRENT.md NEXT.md RISKS.md TODO.md _handoffs/ 开发记录/<用户名>/ <any other paths you touched>
    ```
 2. `git status` → show staged files to the user.
 3. `git commit -m "docs(handoff): <topic> YYYY-MM-DD"` — commit message must be specific and meaningful.
@@ -257,10 +261,14 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
 6. **Never `git add .`** in the docs repo. Always precise-add by filename.
 7. **Never commit `*.canvas`, `*.base`, `.obsidian/`, `.trash/`, `.DS_Store` into the docs repo** — these are either oversized binary-ish, per-user config, or OS cruft. If they slip past `.gitignore`, fix `.gitignore` rather than committing.
 8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
+9. **Respect PR/MR boundaries**:
+   - Code repo changes and formal code docs: GitHub PR.
+   - High-level shared docs (`OVERVIEW`, PRD, test plan, project design, architecture design, roadmap, major decisions, `CURRENT/NEXT/RISKS/TODO`, `决策日志`): GitLab MR unless the user is explicitly acting as maintainer for an emergency/small sync.
+   - Personal process records (`开发记录/<用户名>/...`, personal research notes, `_handoffs/...`): direct push is allowed.
 
 ### Document-standards-level (form, topic, frontmatter, naming)
 
-9. **Every `.md` you create or substantially edit must have frontmatter** with at least these fields:
+10. **Every `.md` you create or substantially edit must have frontmatter** with at least these fields:
    ```yaml
    ---
    title: <clear short title>
@@ -271,27 +279,27 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
    ---
    ```
    If creating a new doc and you can't commit to a `form`, **stop and ask the user** which form fits.
-10. **`form` value must match the doc's structure and lifecycle**. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation — flag it.
-11. **Naming must follow the form's convention**:
+11. **`form` value must match the doc's structure and lifecycle**. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation — flag it.
+12. **Naming must follow the form's convention**:
     - `state` → uppercase no prefix (`CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`)
-    - `trace` → `YYYY-MM-DD[-HHMM]-<kebab-topic>.md`
+    - `trace` → `_handoffs/YYYY-MM-DD-HHMM-<kebab-topic>.md` for handoffs, or `开发记录/<用户名>/YYYY-MM-DD-<kebab-topic>.md` for personal dev records
     - `decision` → `ADR-NNN-<slug>.md` or entries inside `决策日志.md`
     - `design` → semantic name, optionally two-digit prefix `NN-<name>.md` for ordered series; `OVERVIEW.md` / `00-项目概览.md` for the entry
     - `reference` → semantic name
     - `index` → `README.md` or `00_INDEX.md`
-12. **Refuse to create these filenames**: `草稿.md`, `未命名*.md`, `随笔.md`, `tmp_*.md`, `test*.md` (unless actually a test file for code), `20260420_xxx.md` (wrong date format). Suggest a valid name instead.
-13. **trace and decision forms are append-only on history**. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be rewritten — fix typos only, never semantic content. To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
-14. **One thing per file** for `trace` and `decision` forms — one session per handoff, one change topic per devlog, one decision per ADR.
-15. **When modifying any doc, update `updated: YYYY-MM-DD`** in its frontmatter.
-16. **`state` form docs (CURRENT/NEXT/RISKS/TODO) must stay ≤ ~300 lines**. Over 2× that, warn the user and propose archiving old content to `archive/`.
-17. **Every project must have**: `README.md` (index), at least one `form: design` doc with `topic: positioning` or `topic: overview` (e.g. `OVERVIEW.md`), state quartet, `_handoffs/`, `开发日志/` (or `devlog/`), `决策日志.md` (or `ADR/` dir), and `archive/`. If any is missing when you enter a project, flag it.
+13. **Refuse to create these filenames**: `草稿.md`, `未命名*.md`, `随笔.md`, `tmp_*.md`, `test*.md` (unless actually a test file for code), `20260420_xxx.md` (wrong date format). Suggest a valid name instead.
+14. **trace and decision forms are append-only on history**. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be rewritten — fix typos only, never semantic content. To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
+15. **One thing per file** for `trace` and `decision` forms — one session per handoff, one change topic per dev record, one decision per ADR.
+16. **When modifying any doc, update `updated: YYYY-MM-DD`** in its frontmatter.
+17. **`state` form docs (CURRENT/NEXT/RISKS/TODO) must stay ≤ ~300 lines**. Over 2× that, warn the user and propose archiving old content to `archive/`.
+18. **Every project must have**: `README.md` (index), at least one `form: design` doc with `topic: positioning` or `topic: overview` (e.g. `OVERVIEW.md`), state quartet, `_handoffs/`, `开发记录/<用户名>/`, `决策日志.md` (or `ADR/` dir), and `archive/`. If any is missing when you enter a project, flag it.
 
 ### TODO.md ownership (防 race condition)
 
-18. **Before starting any TODO task**, follow the claim flow (see "TODO.md ownership" section). Check ownership first, claim atomically via commit+push, never take on a task without verifying you hold the lock.
-19. **Never modify a TODO line whose `@owner` is not you** — neither content, nor state, nor `[x]`. Even if the task "looks done", the rightful owner makes that call.
-20. **Claiming is not lazy-load**. Move-to-进行中 must be immediately followed by `git commit` + `git push`. No "claim first, push later" — that invites race conditions.
-21. **Claim push conflicts = do not auto-grab**. If your claim push is rejected because someone else claimed the same task, abort, inform the user, let them coordinate — never `--force` to win the race.
+19. **Before starting any TODO task**, follow the claim flow (see "TODO.md ownership" section). Check ownership first, claim atomically via commit+push, never take on a task without verifying you hold the lock.
+20. **Never modify a TODO line whose `@owner` is not you** — neither content, nor state, nor `[x]`. Even if the task "looks done", the rightful owner makes that call.
+21. **Claiming is not lazy-load**. Move-to-进行中 must be immediately followed by `git commit` + `git push`. No "claim first, push later" — that invites race conditions.
+22. **Claim push conflicts = do not auto-grab**. If your claim push is rejected because someone else claimed the same task, abort, inform the user, let them coordinate — never `--force` to win the race.
 
 ## Document standards (the full picture)
 
@@ -314,7 +322,7 @@ Form/topic dual-axis, required baseline, naming — the single source of truth i
 - `README.md` (form=index)
 - `OVERVIEW.md` or equivalent (form=design, topic contains `positioning` or `overview`)
 - `CURRENT.md` / `NEXT.md` / `RISKS.md` / `TODO.md` (form=state, four-file quartet)
-- `_handoffs/` and `开发日志/` (form=trace)
+- `_handoffs/` and `开发记录/<用户名>/` (form=trace)
 - `决策日志.md` or `ADR/NNN-*.md` (form=decision)
 - `archive/`
 

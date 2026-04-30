@@ -32,4 +32,4 @@ tags:
 - [x] <任务> @<owner> YYYY-MM-DD
 - [x] <另一个> @<owner> YYYY-MM-DD
 
-<!-- 当"最近完成"段超过 15-20 条时，定期归档到 archive/todo-YYYY-MM.md，或直接删除（历史在 _handoffs/ 和 开发日志/ 能找回） -->
+<!-- 当"最近完成"段超过 15-20 条时，定期归档到 archive/todo-YYYY-MM.md，或直接删除（历史在 _handoffs/ 和 开发记录/<用户名>/ 能找回） -->

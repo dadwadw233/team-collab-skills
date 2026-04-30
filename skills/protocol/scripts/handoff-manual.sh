@@ -7,7 +7,7 @@
 #   handoff-manual.sh <topic> --message "..."    # non-interactive: use given message as Summary
 #
 # Assumes you run this from your code repo root (where ./obsidian-docs/ exists).
-# Mirrors the /handoff slash command flow but does not update CURRENT/NEXT/RISKS — that's still manual.
+# Mirrors the /handoff slash command flow but does not update CURRENT/NEXT/RISKS/TODO — that's still manual.
 #
 # Behavior follows the hard constraints in SKILL.md:
 #  - no force push
