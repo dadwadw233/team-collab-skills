@@ -1,7 +1,7 @@
 ---
 name: protocol
 description: |
-  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, or project docs normalization. Do not load solely because `~/.team-docs-config` exists.
+  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, or project docs audit/normalization. Do not load solely because `~/.team-docs-config` exists.
 ---
 
 # Team Collaboration Protocol
@@ -35,12 +35,20 @@ Strong signals:
 - The current directory or an ancestor contains `obsidian-docs/`.
 - The current repo's `AGENTS.md` or `CLAUDE.md` references this protocol, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
 - The current directory is inside a path listed in `~/.team-docs-config`.
-- The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, docs repo audit/normalization, or new-member docs onboarding.
+- The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, docs repo audit/normalization, or new-member docs onboarding.
 
 Weak signal:
 - `~/.team-docs-config` exists somewhere on the machine.
 
 Do **not** load or enforce this full protocol solely from the weak signal. Many users keep that file globally after joining one team project; it must not make unrelated repos inherit team docs behavior.
+
+## Trigger matrix
+
+- **Session start in a team project**: orient, sync docs, then read the state quartet before substantive work.
+- **Substantive work**: keep code changes in the code repo and project memory in `obsidian-docs`; use personal dev records for process notes.
+- **Setup, onboarding, migration, Feishu integration, or "is this repo compliant?"**: run the read-only project audit if the playbook checkout is available.
+- **Mid-session checkpoint**: update the state quartet only; do not commit or push.
+- **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
 
 ## When you arrive in a session
 
@@ -73,6 +81,23 @@ Read in this order:
 4. Optionally recent 2-3 entries in `obsidian-docs/_handoffs/` — what happened recently
 
 If the user gave you a task in their prompt that isn't in `NEXT.md`, **pause and align** with them before acting — the task may be mid-flight from elsewhere or out of scope for this session.
+
+## Project audit / normalization
+
+Run audit when the user asks about project setup, migration, normalization, Feishu automation, onboarding readiness, or whether the repo follows the team standard. Do not run audit on every session start unless the user asks or the project appears misconfigured.
+
+From the code repo root, prefer:
+
+```bash
+<team-collab-playbook>/scripts/audit-project-docs.sh obsidian-docs . <username>
+```
+
+If the playbook checkout path is unknown, search likely local paths such as `~/team-playbook`, `~/projects/team-collab-playbook`, or the user's Obsidian vault. If not found, report that audit needs the playbook checkout and continue with manual checks.
+
+Interpret audit output:
+- `failure(s)` mean the docs baseline is broken and should be fixed before normal work continues.
+- `warning(s)` mean recommended integration gaps such as missing Feishu CI/workflow or agent entry files. Existing projects may migrate these gradually; new projects should aim for zero warnings.
+- Audit is read-only. Do not "fix all" without checking whether changes belong in the docs repo, code repo, or playbook.
 
 ## When the user invokes `/handoff <topic>` (end-of-session)
 
