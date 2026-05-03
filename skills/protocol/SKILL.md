@@ -1,5 +1,5 @@
 ---
-name: protocol
+name: team-collab-protocol
 description: |
   Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, or project docs audit/normalization. Do not load solely because `~/.team-docs-config` exists.
 ---

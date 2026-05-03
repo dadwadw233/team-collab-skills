@@ -9,7 +9,7 @@
       "name": "team-collab",
       "source": "./",
       "description": "Team collaboration protocol for OPC (One-Person-Company) collectives. Provides handoff/checkpoint flow, state quartet (CURRENT/NEXT/RISKS/TODO) templates with @owner task-claim mechanic, form/topic doc taxonomy, git sync conventions, and hard constraints for AI agents working in team-docs-config projects.",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

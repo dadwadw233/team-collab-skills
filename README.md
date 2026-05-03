@@ -6,7 +6,7 @@ Claude Agent Skills for OPC (One-Person-Company) collective team collaboration �
 
 | Skill | Purpose |
 |-------|---------|
-| `protocol` | Full team collaboration protocol: startup orientation, audit/normalization, handoff / checkpoint flow, CURRENT/NEXT/RISKS/TODO state quartet, mandatory `开发记录/<用户名>/...`, code-platform PR/MR and GitLab docs MR boundaries, git sync conventions, hard constraints, conflict handling decision tree |
+| `team-collab-protocol` | Full team collaboration protocol: startup orientation, audit/normalization, handoff / checkpoint flow, CURRENT/NEXT/RISKS/TODO state quartet, mandatory `开发记录/<用户名>/...`, code-platform PR/MR and GitLab docs MR boundaries, git sync conventions, hard constraints, conflict handling decision tree |
 
 The skill is written against the [Anthropic Agent Skills open specification](https://agentskills.io/specification) and works with any agent that implements the standard.
 
@@ -19,7 +19,7 @@ claude plugin marketplace add dadwadw233/team-collab-skills
 claude plugin install team-collab@team-collab-skills
 ```
 
-Skill becomes available as `team-collab:protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs, Feishu automation, or project docs audit/normalization. Existence of `~/.team-docs-config` alone is intentionally not enough.
+Skill becomes available as `team-collab:team-collab-protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs, Feishu automation, or project docs audit/normalization. Existence of `~/.team-docs-config` alone is intentionally not enough.
 
 ### Other agents (Codex CLI, OpenCode, Cursor, VSCode, Cline, Continue, Gemini CLI)
 
