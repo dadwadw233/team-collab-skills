@@ -13,7 +13,7 @@ This skill encodes the AI-side protocol for working in a team project that follo
 When this skill is loaded, the user is working in a project where:
 
 - **Code** lives in a code repository on GitHub or GitLab. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
-- **Docs** live in a separate docs repository on GitLab (invite-only, source of truth), accessed from `obsidian-docs/` in the code repo — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path. The actual local code/docs paths may be custom and should be discovered before setup.
+- **Docs** live in an Obsidian-backed project docs directory, accessed from `obsidian-docs/` in the code repo. New projects should prefer a separate GitLab docs repository, but existing projects may already use a project subdirectory inside a larger Obsidian vault. Both layouts are valid after explicit user confirmation. The actual local code/docs paths may be custom and must be discovered before setup.
 - **Repository governance** is split by purpose:
   - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push `main`; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
   - GitLab docs repo: `main` is protected with no direct push by default; high-level shared docs go through MR; personal process records may follow the project's relaxed direct-push path.
@@ -46,7 +46,7 @@ Do **not** load or enforce this full protocol solely from the weak signal. Many 
 
 - **Session start in a team project**: orient, sync docs, then read the state quartet before substantive work.
 - **Substantive work**: keep code changes in the code repo and project memory in `obsidian-docs`; use personal dev records for process notes.
-- **Setup, onboarding, migration, Feishu integration, or "is this repo compliant?"**: first inspect the real local layout; prefer `team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run` for existing repos, `team-collab init --join <project> --dry-run` for join flows, and `team-collab doctor --project <project>` after registration.
+- **Setup, onboarding, migration, Feishu integration, or "is this repo compliant?"**: first inspect the real local layout; prefer `team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run` for existing repos, `team-collab init --join <project> --dry-run` for join flows, and `team-collab doctor --project <project>` after registration. If the docs path is an existing Obsidian vault subdirectory, treat it as `vault-subdir`; do not copy or migrate it into `Projects/<project>-docs` unless the user explicitly approves that migration.
 - **Mid-session checkpoint**: update the state quartet only; do not commit or push.
 - **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
 
@@ -58,8 +58,10 @@ Run this check sequence — order matters.
 
 1. Detect the docs path: `ls obsidian-docs/` should show `CURRENT.md` etc. If not, the user may not be in a team project — ask before proceeding.
 2. Detect the git layout:
-   - Run `cd obsidian-docs && git remote -v` — it should point to a `-docs` repo (often on GitLab).
-   - Run `git log origin/main..HEAD --oneline` in both the code repo and `obsidian-docs` — zero lines means you're up to date locally vs remote tracking branches.
+   - Run `git -C obsidian-docs rev-parse --show-toplevel` to see whether docs are a standalone repo or a subdirectory inside a larger vault repo.
+   - If standalone, `git -C obsidian-docs remote -v` should usually point to a `-docs` repo.
+   - If it is a vault subdirectory, sync and commit through the parent vault git root, while editing only the selected project docs directory.
+   - Run `git log <upstream>..HEAD --oneline` in the code repo and in the docs git root when an upstream exists.
 
 ### Step B: sync remote docs (mandatory)
 
@@ -96,7 +98,7 @@ team-collab doctor --project <project>
 
 If `team-collab` is not installed, ask the user to install `@embodot/collab@latest`. If the playbook checkout path is unknown, run `team-collab docs-path` first; only search likely local paths such as `~/team-playbook`, `~/projects/team-collab-playbook`, or the user's Obsidian vault if the npm CLI is unavailable.
 
-For setup or migration, do not clone, move docs, rewrite config, or repair symlinks before you have summarized the detected layout and the user has approved the plan.
+For setup or migration, do not clone, copy, move docs, rewrite config, or repair symlinks before you have summarized the detected layout and the user has approved the plan. Existing Obsidian vault subdirectories are legitimate docs locations; normalize them in place unless the user explicitly asks for a standalone docs repo migration.
 
 Interpret audit output:
 - `failure(s)` mean the docs baseline is broken and should be fixed before normal work continues.
@@ -303,7 +305,7 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
    - Unreleased internal service URLs / ports / IPs
    - Unannounced product commercial secrets
 6. **Never `git add .`** in the docs repo. Always precise-add by filename.
-7. **Never commit `*.canvas`, `*.base`, `.obsidian/`, `.trash/`, `.DS_Store` into the docs repo** — these are either oversized binary-ish, per-user config, or OS cruft. If they slip past `.gitignore`, fix `.gitignore` rather than committing.
+7. **Never commit `.obsidian/`, `.trash/`, `.DS_Store`, or other per-user/OS cruft into the docs repo**. Obsidian `.canvas` and `.base` files may be legitimate project docs; only commit them when they are intentionally part of the shared project memory.
 8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
 9. **Respect PR/MR boundaries**:
    - Code repo changes and formal code docs: use the code platform's PR/MR flow (GitHub PR or GitLab MR).
