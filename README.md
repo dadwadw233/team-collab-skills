@@ -19,7 +19,7 @@ claude plugin marketplace add dadwadw233/team-collab-skills
 claude plugin install team-collab@team-collab-skills
 ```
 
-Skill becomes available as `team-collab:team-collab-protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs, Feishu automation, or project docs audit/normalization. Existence of `~/.team-docs-config` alone is intentionally not enough.
+Skill becomes available as `team-collab:team-collab-protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-collab/config.json` or legacy `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs, Feishu automation, or project docs audit/normalization. Existence of a global team-collab config alone is intentionally not enough.
 
 ### Other agents (Codex CLI, OpenCode, Cursor, VSCode, Cline, Continue, Gemini CLI)
 
@@ -48,8 +48,8 @@ This skill is meant to be installed by members of an OPC collective that has:
 - Per-project docs repos (`gitlab.com/<team>/<project>-docs`) under an invite-only Group
 - Code repos on GitHub or GitLab with protected `main`; code changes go through the platform's PR/MR flow
 - GitLab docs repos with protected `main`; high-level shared docs through MR; personal dev records may use the project's relaxed direct-push path
-- Individual `~/.team-docs-config` listing projects each member opted into
-- A `team-docs-sync.sh` batch clone/pull script
+- Individual `~/.team-collab/config.json` listing projects each member opted into, with legacy `~/.team-docs-config` compatibility
+- The `@embodot/collab` npm CLI for `install-skills`, `register`, `init`, `sync`, and `doctor`
 
 If you don't have those yet, read the playbook first — this skill is the AI-facing layer that complements it.
 

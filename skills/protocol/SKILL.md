@@ -1,7 +1,7 @@
 ---
 name: team-collab-protocol
 description: |
-  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, or project docs audit/normalization. Do not load solely because `~/.team-docs-config` exists.
+  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-collab/config.json` or legacy `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, or project docs audit/normalization. Do not load solely because a global team-collab config exists.
 ---
 
 # Team Collaboration Protocol
@@ -12,8 +12,8 @@ This skill encodes the AI-side protocol for working in a team project that follo
 
 When this skill is loaded, the user is working in a project where:
 
-- **Code** lives in a code repository on GitHub or GitLab, accessed from `~/projects/<project>/`. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
-- **Docs** live in a separate docs repository on GitLab (invite-only, source of truth), accessed from `~/projects/<project>/obsidian-docs/` — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path.
+- **Code** lives in a code repository on GitHub or GitLab. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
+- **Docs** live in a separate docs repository on GitLab (invite-only, source of truth), accessed from `obsidian-docs/` in the code repo — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path. The actual local code/docs paths may be custom and should be discovered before setup.
 - **Repository governance** is split by purpose:
   - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push `main`; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
   - GitLab docs repo: `main` is protected with no direct push by default; high-level shared docs go through MR; personal process records may follow the project's relaxed direct-push path.
@@ -34,19 +34,19 @@ Load this skill only from a strong team-project signal or an explicit user reque
 Strong signals:
 - The current directory or an ancestor contains `obsidian-docs/`.
 - The current repo's `AGENTS.md` or `CLAUDE.md` references this protocol, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
-- The current directory is inside a path listed in `~/.team-docs-config`.
+- The current directory is inside a path listed in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
 - The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, docs repo audit/normalization, or new-member docs onboarding.
 
 Weak signal:
-- `~/.team-docs-config` exists somewhere on the machine.
+- `~/.team-collab/config.json` or `~/.team-docs-config` exists somewhere on the machine.
 
-Do **not** load or enforce this full protocol solely from the weak signal. Many users keep that file globally after joining one team project; it must not make unrelated repos inherit team docs behavior.
+Do **not** load or enforce this full protocol solely from the weak signal. Many users keep a global config after joining one team project; it must not make unrelated repos inherit team docs behavior.
 
 ## Trigger matrix
 
 - **Session start in a team project**: orient, sync docs, then read the state quartet before substantive work.
 - **Substantive work**: keep code changes in the code repo and project memory in `obsidian-docs`; use personal dev records for process notes.
-- **Setup, onboarding, migration, Feishu integration, or "is this repo compliant?"**: run the read-only project audit if the playbook checkout is available.
+- **Setup, onboarding, migration, Feishu integration, or "is this repo compliant?"**: first inspect the real local layout; prefer `team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run` for existing repos, `team-collab init --join <project> --dry-run` for join flows, and `team-collab doctor --project <project>` after registration.
 - **Mid-session checkpoint**: update the state quartet only; do not commit or push.
 - **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
 
@@ -89,10 +89,14 @@ Run audit when the user asks about project setup, migration, normalization, Feis
 From the code repo root, prefer:
 
 ```bash
+team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run
+team-collab doctor --project <project>
 <team-collab-playbook>/scripts/audit-project-docs.sh obsidian-docs . <username>
 ```
 
-If the playbook checkout path is unknown, search likely local paths such as `~/team-playbook`, `~/projects/team-collab-playbook`, or the user's Obsidian vault. If not found, report that audit needs the playbook checkout and continue with manual checks.
+If `team-collab` is not installed, ask the user to install `@embodot/collab@latest`. If the playbook checkout path is unknown, run `team-collab docs-path` first; only search likely local paths such as `~/team-playbook`, `~/projects/team-collab-playbook`, or the user's Obsidian vault if the npm CLI is unavailable.
+
+For setup or migration, do not clone, move docs, rewrite config, or repair symlinks before you have summarized the detected layout and the user has approved the plan.
 
 Interpret audit output:
 - `failure(s)` mean the docs baseline is broken and should be fixed before normal work continues.
