@@ -6,7 +6,7 @@ Claude Agent Skills for OPC (One-Person-Company) collective team collaboration �
 
 | Skill | Purpose |
 |-------|---------|
-| `protocol` | Full team collaboration protocol: startup orientation, audit/normalization, handoff / checkpoint flow, CURRENT/NEXT/RISKS/TODO state quartet, mandatory `开发记录/<用户名>/...`, GitHub PR/GitLab MR boundaries, git sync conventions, hard constraints, conflict handling decision tree |
+| `protocol` | Full team collaboration protocol: startup orientation, audit/normalization, handoff / checkpoint flow, CURRENT/NEXT/RISKS/TODO state quartet, mandatory `开发记录/<用户名>/...`, code-platform PR/MR and GitLab docs MR boundaries, git sync conventions, hard constraints, conflict handling decision tree |
 
 The skill is written against the [Anthropic Agent Skills open specification](https://agentskills.io/specification) and works with any agent that implements the standard.
 
@@ -46,8 +46,8 @@ This skill is meant to be installed by members of an OPC collective that has:
 
 - A team playbook repo (e.g. `gitlab.com/<team>/team-collab-playbook`) with human-facing docs
 - Per-project docs repos (`gitlab.com/<team>/<project>-docs`) under an invite-only Group
-- GitHub code repos with PR-only protected `main`
-- GitLab docs repos with protected `main`; high-level shared docs through MR; personal dev records through direct push
+- Code repos on GitHub or GitLab with protected `main`; code changes go through the platform's PR/MR flow
+- GitLab docs repos with protected `main`; high-level shared docs through MR; personal dev records may use the project's relaxed direct-push path
 - Individual `~/.team-docs-config` listing projects each member opted into
 - A `team-docs-sync.sh` batch clone/pull script
 

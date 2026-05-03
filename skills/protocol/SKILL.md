@@ -12,11 +12,11 @@ This skill encodes the AI-side protocol for working in a team project that follo
 
 When this skill is loaded, the user is working in a project where:
 
-- **Code** lives in a code repository (typically GitHub), accessed from `~/projects/<project>/`.
-- **Docs** live in a separate docs repository (typically GitLab, invite-only), accessed from `~/projects/<project>/obsidian-docs/` — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path.
+- **Code** lives in a code repository on GitHub or GitLab, accessed from `~/projects/<project>/`. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
+- **Docs** live in a separate docs repository on GitLab (invite-only, source of truth), accessed from `~/projects/<project>/obsidian-docs/` — which is either a symlink to an Obsidian vault subdirectory, or a direct `git clone` into that path.
 - **Repository governance** is split by purpose:
-  - GitHub code repo: `main` is protected; code changes go through PR; never force-push `main`; PRs may request Codex/Copilot review but humans decide.
-  - GitLab docs repo: `main` is protected but maintainers may direct-push; high-level shared docs go through MR; personal process records may be direct-pushed.
+  - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push `main`; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
+  - GitLab docs repo: `main` is protected with no direct push by default; high-level shared docs go through MR; personal process records may follow the project's relaxed direct-push path.
 - **Project-level instructions** for agents live in `AGENTS.md` at the code repo root (cross-agent standard per agents.md). `CLAUDE.md`, if present, is typically a thin import pointer to `AGENTS.md`.
 - **Shared docs state** is expressed in **four** files at the docs repo root (the "state quartet"):
   - `CURRENT.md` — one-screen project status (the team's single reading entry point)
@@ -302,9 +302,9 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
 7. **Never commit `*.canvas`, `*.base`, `.obsidian/`, `.trash/`, `.DS_Store` into the docs repo** — these are either oversized binary-ish, per-user config, or OS cruft. If they slip past `.gitignore`, fix `.gitignore` rather than committing.
 8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
 9. **Respect PR/MR boundaries**:
-   - Code repo changes and formal code docs: GitHub PR.
-   - High-level shared docs (`OVERVIEW`, PRD, test plan, project design, architecture design, roadmap, major decisions, `CURRENT/NEXT/RISKS/TODO`, `决策日志`): GitLab MR unless the user is explicitly acting as maintainer for an emergency/small sync.
-   - Personal process records (`开发记录/<用户名>/...`, personal research notes, `_handoffs/...`): direct push is allowed.
+   - Code repo changes and formal code docs: use the code platform's PR/MR flow (GitHub PR or GitLab MR).
+   - High-level shared docs (`OVERVIEW`, PRD, test plan, project design, architecture design, roadmap, major decisions, `CURRENT/NEXT/RISKS/TODO`, `决策日志`): GitLab docs MR.
+   - Personal process records (`开发记录/<用户名>/...`, personal research notes, `_handoffs/...`): direct push is allowed when the project docs repo explicitly keeps that relaxed path.
 
 ### Document-standards-level (form, topic, frontmatter, naming)
 
