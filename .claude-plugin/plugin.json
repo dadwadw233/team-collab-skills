@@ -1,0 +1,19 @@
+{
+  "name": "team-collab",
+  "version": "0.4.0",
+  "description": "Team collaboration protocol skills for AI agents working in shared Obsidian docs projects.",
+  "author": {
+    "name": "Yuanhong Yu",
+    "url": "https://github.com/dadwadw233"
+  },
+  "homepage": "https://github.com/dadwadw233/team-collab-skills",
+  "repository": "https://github.com/dadwadw233/team-collab-skills",
+  "license": "MIT",
+  "keywords": [
+    "team-collab",
+    "handoff",
+    "checkpoint",
+    "obsidian",
+    "agent-skills"
+  ]
+}

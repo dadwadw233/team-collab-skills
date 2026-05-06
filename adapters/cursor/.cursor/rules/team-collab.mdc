@@ -1,0 +1,19 @@
+---
+description: Apply the team-collab protocol in repos that opt into shared Obsidian docs governance.
+alwaysApply: true
+---
+
+# Team Collab Protocol Pointer
+
+Use this rule only when the current repository is a team project. Strong signals:
+
+- `obsidian-docs/` exists in this repo or an ancestor.
+- `AGENTS.md` or `CLAUDE.md` references team-collab, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `obsidian-docs`.
+- The user asks about handoff, checkpoint, team docs workflow, TODO ownership, Feishu automation, project audit, or docs normalization.
+
+When active:
+
+1. Read repo-root `AGENTS.md` first.
+2. Read `obsidian-docs/CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md` before substantive work.
+3. Treat `$handoff <topic>` as the end-of-session handoff flow and `$checkpoint` as the mid-session state snapshot flow.
+4. Do not copy the full protocol here. The source of truth is the installed `team-collab-protocol` skill from `https://github.com/dadwadw233/team-collab-skills`.
