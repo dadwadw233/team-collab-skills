@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Checkpoint"
+  short_description: "Snapshot team state without git ops"
+  default_prompt: "$checkpoint"

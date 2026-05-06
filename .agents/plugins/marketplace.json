@@ -1,0 +1,20 @@
+{
+  "name": "team-collab-skills",
+  "interface": {
+    "displayName": "Team Collab Skills"
+  },
+  "plugins": [
+    {
+      "name": "team-collab",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

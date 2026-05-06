@@ -1,0 +1,42 @@
+{
+  "name": "team-collab",
+  "version": "0.4.0",
+  "description": "Codex entry points and protocol skills for the team-collab documentation workflow.",
+  "author": {
+    "name": "Yuanhong Yu",
+    "url": "https://github.com/dadwadw233"
+  },
+  "homepage": "https://github.com/dadwadw233/team-collab-skills",
+  "repository": "https://github.com/dadwadw233/team-collab-skills",
+  "license": "MIT",
+  "keywords": [
+    "team-collab",
+    "handoff",
+    "checkpoint",
+    "obsidian",
+    "agent-skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Team Collab",
+    "shortDescription": "Run team handoffs and checkpoints from Codex",
+    "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session and $checkpoint during long sessions. The full team-collab-protocol skill remains the source of truth for git sync, state docs, TODO ownership, and sensitive-data handling.",
+    "developerName": "Yuanhong Yu",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/dadwadw233/team-collab-skills",
+    "privacyPolicyURL": "https://github.com/dadwadw233/team-collab-skills",
+    "termsOfServiceURL": "https://github.com/dadwadw233/team-collab-skills",
+    "defaultPrompt": [
+      "$handoff session-summary",
+      "$checkpoint",
+      "Read the team-collab project state"
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

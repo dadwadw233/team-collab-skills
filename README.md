@@ -2,13 +2,15 @@
 
 Claude Agent Skills for OPC (One-Person-Company) collective team collaboration — provides a protocol that AI agents (Claude Code, Codex CLI, Cursor, Cline, Continue, Gemini CLI, ...) follow when working in team projects with shared documentation repos.
 
-## What's in here
+## What lives here
 
 | Skill | Purpose |
 |-------|---------|
 | `team-collab-protocol` | Full team collaboration protocol: startup orientation, audit/normalization, handoff / checkpoint flow, CURRENT/NEXT/RISKS/TODO state quartet, mandatory `开发记录/<用户名>/...`, code-platform PR/MR and GitLab docs MR boundaries, git sync conventions, hard constraints, conflict handling decision tree |
+| `handoff` | Codex-friendly `$handoff <topic>` wrapper that delegates to `team-collab-protocol` |
+| `checkpoint` | Codex-friendly `$checkpoint` wrapper that delegates to `team-collab-protocol` |
 
-The skill is written against the [Anthropic Agent Skills open specification](https://agentskills.io/specification) and works with any agent that implements the standard.
+The skill content is written against the [Anthropic Agent Skills open specification](https://agentskills.io/specification). This repository is the runtime distribution source for agent-facing skills/plugins/marketplaces. The human SOP, npm CLI, installers, doctor checks, and Feishu/GitLab automation live in the playbook repository.
 
 ## Install
 
@@ -21,7 +23,24 @@ claude plugin install team-collab@team-collab-skills
 
 Skill becomes available as `team-collab:team-collab-protocol`. Claude auto-loads it from strong project signals such as `obsidian-docs/`, project instructions, current path matching `~/.team-collab/config.json` or legacy `~/.team-docs-config`, or explicit user requests about handoff/checkpoint/team docs, Feishu automation, or project docs audit/normalization. Existence of a global team-collab config alone is intentionally not enough.
 
-### Other agents (Codex CLI, OpenCode, Cursor, VSCode, Cline, Continue, Gemini CLI)
+### Codex CLI
+
+```bash
+codex plugin marketplace add https://github.com/dadwadw233/team-collab-skills.git
+```
+
+The Codex marketplace manifest is in `.agents/plugins/marketplace.json`, and the Codex plugin manifest is in `.codex-plugin/plugin.json`. This is intentional: Codex runtime artifacts belong in this skills repository, not in the human playbook repository. The playbook installer may call this command, but it should not be the marketplace source.
+
+Use:
+
+```text
+$handoff <topic>
+$checkpoint
+```
+
+Codex may not support custom top-level `/handoff` or `/checkpoint` slash commands; if those reach the model as plain text, the global `AGENTS.md` pointer tells Codex to treat them as equivalent to the `$...` form.
+
+### Other agents (OpenCode, Cursor, VS Code, Cline, Continue, Gemini CLI)
 
 ```bash
 # Clone to the agent's skill directory (exact path varies by agent — see agent's docs)
