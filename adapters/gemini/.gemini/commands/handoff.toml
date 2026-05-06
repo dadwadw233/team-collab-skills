@@ -1,0 +1,6 @@
+description = "Run the team-collab end-of-session handoff flow."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as the handoff topic: {{args}}
+
+Read repo-root AGENTS.md and the installed team-collab-protocol skill. Then perform the end-of-session handoff flow. Do not improvise a partial handoff from this command alone.
+"""

@@ -1,0 +1,6 @@
+description = "Run the team-collab mid-session checkpoint flow."
+prompt = """
+Use the team-collab protocol.
+
+Read repo-root AGENTS.md and the installed team-collab-protocol skill. Then perform the mid-session checkpoint flow: update only the state docs allowed by the protocol, and do not commit, push, pull, or append a handoff file.
+"""
