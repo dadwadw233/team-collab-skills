@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Handoff"
+  short_description: "End the session with docs sync"
+  default_prompt: "$handoff session-summary"
