@@ -10,10 +10,9 @@
 # Mirrors the /handoff slash command flow but does not update CURRENT/NEXT/RISKS/TODO — that's still manual.
 #
 # Behavior follows the hard constraints in SKILL.md:
-#  - no force push
 #  - no --no-verify
-#  - no automatic retry
-#  - stops on any failure
+#  - no force-push to the docs default branch
+#  - stop on docs default-branch git semantic failures
 
 set -e
 
@@ -163,7 +162,7 @@ fi
 blue "→ git push origin main"
 if ! git push origin main; then
   red "push rejected. Your commit is preserved locally."
-  red "run 'git pull --rebase && git push' manually, NEVER --force."
+  red "run 'git pull --rebase && git push' manually; do not force-push the docs default branch."
   exit 1
 fi
 

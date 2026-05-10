@@ -1,7 +1,7 @@
 ---
 name: team-collab-protocol
 description: |
-  Use when the current repo is a team project: `obsidian-docs/` exists in cwd or an ancestor; project `AGENTS.md`/`CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, or `_handoffs`; cwd matches a path listed in `~/.team-collab/config.json` or legacy `~/.team-docs-config`; or the user asks about handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, or project docs audit/normalization. Do not load solely because a global team-collab config exists.
+  Use when the current repo is explicitly governed by team-collab: `obsidian-docs/` exists in cwd/ancestor, repo `AGENTS.md`/`CLAUDE.md` imports team-collab, the cwd is under a registered code/docs path, or the user asks for team-collab handoff/checkpoint/docs governance/Feishu automation. Do not use solely because a global config file exists.
 ---
 
 # Team Collaboration Protocol
@@ -15,7 +15,7 @@ When this skill is loaded, the user is working in a project where:
 - **Code** lives in a code repository on GitHub or GitLab. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
 - **Docs** live in an Obsidian-backed project docs directory, accessed from `obsidian-docs/` in the code repo. New projects should prefer a separate GitLab docs repository, but existing projects may already use a project subdirectory inside a larger Obsidian vault. Both layouts are valid after explicit user confirmation. The actual local code/docs paths may be custom and must be discovered before setup.
 - **Repository governance** is split by purpose:
-  - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push `main`; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
+  - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push protected/shared/unclear branches; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
   - GitLab docs repo: `main` is protected with no direct push by default; high-level shared docs go through MR; personal process records may follow the project's relaxed direct-push path.
 - **Project-level instructions** for agents live in `AGENTS.md` at the code repo root (cross-agent standard per agents.md). `CLAUDE.md`, if present, is typically a thin import pointer to `AGENTS.md`.
 - **Shared docs state** is expressed in **four** files at the docs repo root (the "state quartet"):
@@ -34,7 +34,7 @@ Load this skill only from a strong team-project signal or an explicit user reque
 Strong signals:
 - The current directory or an ancestor contains `obsidian-docs/`.
 - The current repo's `AGENTS.md` or `CLAUDE.md` references this protocol, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
-- The current directory is inside a path listed in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
+- The current directory is equal to or underneath a registered `codePath`, `docsPath`, or `docsGitRoot` in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
 - The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, docs repo audit/normalization, or new-member docs onboarding.
 
 Weak signal:
@@ -107,7 +107,7 @@ Interpret audit output:
 
 ## When the user invokes `/handoff <topic>` (end-of-session)
 
-You will generate a team handoff record and sync it to remote. **Strict step-by-step execution**. Any failure: stop, report, do not retry, do not force, do not `--no-verify`.
+You will generate a team handoff record and sync it to remote. **Strict step-by-step execution**. Docs default-branch sync failures, conflicts, rejected pushes, and hook/gitleaks failures must stop and report. Do not force-push the docs default branch. Do not use `--no-verify`.
 
 ### Step 1: sync remote
 
@@ -227,7 +227,7 @@ In the docs repo:
 5. `git pull --rebase origin main` — in case of a remote push during steps 3-7.
    - Conflict → abort rebase, **keep the local commit**, report, stop.
 6. `git push origin main`.
-   - Rejected → report to user, suggest `git pull --rebase && git push` (manual), **never `--force`**.
+   - Rejected → report to user, suggest `git pull --rebase && git push` (manual), **never force-push the docs default branch**.
 7. Report commit hash + push result.
 
 ### Step 8: concise final report (≤ 15 lines)
@@ -271,7 +271,7 @@ Remote advanced during your session. You already hold a valid local commit.
 
 1. Report the push rejection.
 2. Suggest the user run `git pull --rebase && git push` themselves.
-3. **Do not force-push**. Never `--force`, `--force-with-lease`, or `+main`.
+3. **Do not force-push docs default/shared branches**. Never `--force`, `--force-with-lease`, or `+main` here.
 4. The local handoff file and commit are preserved.
 
 ### Two people edited `CURRENT.md` concurrently
@@ -293,28 +293,29 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
 
 ### Git-level (sync, pushes, secrets)
 
-1. **Never force push**. Not `--force`, not `--force-with-lease`, not `push -f`.
-2. **Never `--no-verify`**. The gitleaks hook is the last line of defense for secret leaks.
-3. **Never retry failed git operations automatically**. One failure → stop and report.
-4. **Never fabricate a handoff to satisfy a topic parameter**. Empty session = no handoff.
-5. **Never write these into the docs repo**:
+1. **Never force-push protected/shared/unclear branches**. This includes `main`, `master`, `release/*`, `prod/*`, docs repo default branches, another person's branch, or any branch whose ownership is unclear.
+2. **Self-owned non-protected working branches may be force-pushed** after rebase, commit cleanup, or conflict repair. Prefer `--force-with-lease`; use plain `--force` only when the branch is certainly self-owned and no one else has pushed to it. Check `git branch --show-current`, `git status -sb`, and `git branch -vv` first.
+3. **Never `--no-verify`**. The gitleaks hook is the last line of defense for secret leaks.
+4. **Never blindly retry or auto-recover from semantic git failures** such as non-fast-forward rejection, protected branch rejection, permission denied, hook/gitleaks failure, or rebase conflicts — stop and report.
+5. **Never fabricate a handoff to satisfy a topic parameter**. Empty session = no handoff.
+6. **Never write these into the docs repo**:
    - API keys / access tokens / OAuth secrets / private keys
    - Database connection strings with credentials
    - Customer full names or customer-internal contact info
    - Other OPC members' internal company confidential data
    - Unreleased internal service URLs / ports / IPs
    - Unannounced product commercial secrets
-6. **Never `git add .`** in the docs repo. Always precise-add by filename.
-7. **Never commit `.obsidian/`, `.trash/`, `.DS_Store`, or other per-user/OS cruft into the docs repo**. Obsidian `.canvas` and `.base` files may be legitimate project docs; only commit them when they are intentionally part of the shared project memory.
-8. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
-9. **Respect PR/MR boundaries**:
+7. **Never `git add .`** in the docs repo. Always precise-add by filename.
+8. **Never commit `.obsidian/`, `.trash/`, `.DS_Store`, or other per-user/OS cruft into the docs repo**. Obsidian `.canvas` and `.base` files may be legitimate project docs; only commit them when they are intentionally part of the shared project memory.
+9. **Keep wikilinks out of critical cross-file references**. Use standard Markdown `[text](./path.md)` for CURRENT/NEXT/RISKS/TODO/ADR internal links so they render on web (GitHub/GitLab). Wikilinks are OK for informational prose but not for navigation anchors.
+10. **Respect PR/MR boundaries**:
    - Code repo changes and formal code docs: use the code platform's PR/MR flow (GitHub PR or GitLab MR).
    - High-level shared docs (`OVERVIEW`, PRD, test plan, project design, architecture design, roadmap, major decisions, `CURRENT/NEXT/RISKS/TODO`, `决策日志`): GitLab docs MR.
    - Personal process records (`开发记录/<用户名>/...`, personal research notes, `_handoffs/...`): direct push is allowed when the project docs repo explicitly keeps that relaxed path.
 
 ### Document-standards-level (form, topic, frontmatter, naming)
 
-10. **Every `.md` you create or substantially edit must have frontmatter** with at least these fields:
+11. **Every `.md` you create or substantially edit must have frontmatter** with at least these fields:
    ```yaml
    ---
    title: <clear short title>
@@ -325,31 +326,31 @@ Staged content contains something matching a secret pattern (OpenAI key, AWS tok
    ---
    ```
    If creating a new doc and you can't commit to a `form`, **stop and ask the user** which form fits.
-11. **`form` value must match the doc's structure and lifecycle**. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation — flag it.
-12. **Naming must follow the form's convention**:
+12. **`form` value must match the doc's structure and lifecycle**. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation — flag it.
+13. **Naming must follow the form's convention**:
     - `state` → uppercase no prefix (`CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`)
     - `trace` → `_handoffs/YYYY-MM-DD-HHMM-<kebab-topic>.md` for handoffs, or `开发记录/<用户名>/YYYY-MM-DD-<kebab-topic>.md` for personal dev records
     - `decision` → `ADR-NNN-<slug>.md` or entries inside `决策日志.md`
     - `design` → semantic name, optionally two-digit prefix `NN-<name>.md` for ordered series; `OVERVIEW.md` / `00-项目概览.md` for the entry
     - `reference` → semantic name
     - `index` → `README.md` or `00_INDEX.md`
-13. **Refuse to create these filenames**: `草稿.md`, `未命名*.md`, `随笔.md`, `tmp_*.md`, `test*.md` (unless actually a test file for code), `20260420_xxx.md` (wrong date format). Suggest a valid name instead.
-14. **trace and decision forms are append-only on history**. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be rewritten — fix typos only, never semantic content. To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
-15. **One thing per file** for `trace` and `decision` forms — one session per handoff, one change topic per dev record, one decision per ADR.
-16. **When modifying any doc, update `updated: YYYY-MM-DD`** in its frontmatter.
-17. **`state` form docs (CURRENT/NEXT/RISKS/TODO) must stay ≤ ~300 lines**. Over 2× that, warn the user and propose archiving old content to `archive/`.
-18. **Every project must have**: `README.md` (index), at least one `form: design` doc with `topic: positioning` or `topic: overview` (e.g. `OVERVIEW.md`), state quartet, `_handoffs/`, `开发记录/<用户名>/`, `决策日志.md` (or `ADR/` dir), and `archive/`. If any is missing when you enter a project, flag it.
+14. **Refuse to create these filenames**: `草稿.md`, `未命名*.md`, `随笔.md`, `tmp_*.md`, `test*.md` (unless actually a test file for code), `20260420_xxx.md` (wrong date format). Suggest a valid name instead.
+15. **trace and decision forms are append-only on history**. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be rewritten — fix typos only, never semantic content. To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
+16. **One thing per file** for `trace` and `decision` forms — one session per handoff, one change topic per dev record, one decision per ADR.
+17. **When modifying any doc, update `updated: YYYY-MM-DD`** in its frontmatter.
+18. **`state` form docs (CURRENT/NEXT/RISKS/TODO) must stay ≤ ~300 lines**. Over 2× that, warn the user and propose archiving old content to `archive/`.
+19. **Project baseline is enforced during audit/init, not every normal session**: a mature project should have `README.md` (index), at least one overview/design doc, the state quartet, `_handoffs/`, `开发记录/<用户名>/`, `决策日志.md` (or `ADR/` dir), and `archive/`. In ordinary feature/debug work, flag missing baseline items only if they directly affect the requested task.
 
 ### TODO.md ownership (防 race condition)
 
-19. **Before starting any TODO task**, follow the claim flow (see "TODO.md ownership" section). Check ownership first, claim atomically via commit+push, never take on a task without verifying you hold the lock.
-20. **Never modify a TODO line whose `@owner` is not you** — neither content, nor state, nor `[x]`. Even if the task "looks done", the rightful owner makes that call.
-21. **Claiming is not lazy-load**. Move-to-进行中 must be immediately followed by `git commit` + `git push`. No "claim first, push later" — that invites race conditions.
-22. **Claim push conflicts = do not auto-grab**. If your claim push is rejected because someone else claimed the same task, abort, inform the user, let them coordinate — never `--force` to win the race.
+20. **Before starting any TODO task**, follow the claim flow (see "TODO.md ownership" section). Check ownership first, claim atomically via commit+push, never take on a task without verifying you hold the lock.
+21. **Never modify a TODO line whose `@owner` is not you** — neither content, nor state, nor `[x]`. Even if the task "looks done", the rightful owner makes that call.
+22. **Claiming is not lazy-load**. Move-to-进行中 must be immediately followed by `git commit` + `git push`. No "claim first, push later" — that invites race conditions.
+23. **Claim push conflicts = do not auto-grab**. If your claim push is rejected because someone else claimed the same task, abort, inform the user, let them coordinate — never `--force` to win the race.
 
 ## Document standards (the full picture)
 
-Form/topic dual-axis, required baseline, naming — the single source of truth is the human-readable `07-文档组织规范.md` in the team playbook. Hard constraints #9–#17 above encode the subset an AI must enforce silently.
+Form/topic dual-axis, required baseline, naming — the single source of truth is the human-readable `07-文档组织规范.md` in the team playbook. Hard constraints #10–#18 above encode the subset an AI must enforce silently.
 
 **The 6 forms** and their structure:
 
