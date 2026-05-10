@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Team Collab",
     "shortDescription": "Run team handoffs and checkpoints from Codex",
-    "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session and $checkpoint during long sessions. The full team-collab-protocol skill remains the source of truth for git sync, state docs, TODO ownership, and sensitive-data handling.",
+    "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session and $checkpoint during long sessions. The team-collab-protocol entrypoint routes to task-specific references for git sync, state docs, TODO ownership, and sensitive-data handling.",
     "developerName": "Yuanhong Yu",
     "category": "Productivity",
     "capabilities": [

@@ -4,7 +4,7 @@ This directory contains thin adapter templates for agents that do not consume th
 
 ## Boundary
 
-- Source of truth: `skills/protocol/SKILL.md`.
+- Source of truth: `skills/protocol/SKILL.md` plus task-specific files under `skills/protocol/references/`.
 - Plugin/runtime manifests: this repository.
 - Human SOP, npm CLI, doctor, installer, and Feishu/GitLab automation: `team-collab-playbook`.
 - Project-local agent files should be pointers, not full protocol copies.
