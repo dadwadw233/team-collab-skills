@@ -14,7 +14,7 @@ $handoff <topic>
 ## Required behavior
 
 1. Treat any text after `$handoff` as the handoff topic.
-2. Immediately follow the installed `team-collab-protocol` skill section "When the user invokes `/handoff <topic>`".
+2. Immediately follow the installed `team-collab-protocol` skill and its `references/handoff.md` flow.
 3. If the `team-collab-protocol` skill is not available in the current session, read it from:
 
 ```text
@@ -27,7 +27,7 @@ $handoff <topic>
 team-collab install-skills --agent codex --force
 ```
 
-5. Do not improvise a partial handoff from this wrapper alone. The full protocol owns git sync, empty-session checks, state-quartet updates, sensitive-data rules, conflict handling, commit, and push behavior.
+5. Do not improvise a partial handoff from this wrapper alone. The protocol references own git sync, empty-session checks, state-quartet updates, sensitive-data rules, conflict handling, commit, and push behavior.
 
 ## Compatibility note
 

@@ -84,7 +84,7 @@ team-collab doctor --project <project>
 | **Gemini CLI** | `GEMINI.md` + custom commands | `adapters/gemini/GEMINI.md`, `.gemini/commands/*.toml` | Copy into project for `/handoff` and `/checkpoint` commands |
 | **Manual** | Markdown + shell helper | `skills/protocol/SKILL.md`, `skills/protocol/scripts/handoff-manual.sh` | Read and run manually if no skill-native agent is available |
 
-Adapter files are intentionally **thin pointers**. Do not fork the full protocol into every tool-specific rule file; keep `skills/protocol/SKILL.md` as the source of truth.
+Adapter files are intentionally **thin pointers**. Do not fork the protocol into every tool-specific rule file; keep `skills/protocol/SKILL.md` and `skills/protocol/references/` as the source of truth.
 
 ---
 
@@ -92,9 +92,10 @@ Adapter files are intentionally **thin pointers**. Do not fork the full protocol
 
 | Runtime artifact | Purpose |
 |------------------|---------|
-| `skills/protocol/SKILL.md` | Full team collaboration protocol: startup orientation, audit/normalization, handoff/checkpoint flow, state quartet, TODO ownership, docs taxonomy, hard constraints, conflict handling |
-| `skills/handoff/SKILL.md` | Codex-friendly `$handoff <topic>` wrapper that delegates to the full protocol |
-| `skills/checkpoint/SKILL.md` | Codex-friendly `$checkpoint` wrapper that delegates to the full protocol |
+| `skills/protocol/SKILL.md` | Slim runtime entrypoint: activation rules, quick context, hard constraints, and references to task-specific protocol files |
+| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, git policy, docs standards, and TODO ownership |
+| `skills/handoff/SKILL.md` | Codex-friendly `$handoff <topic>` wrapper that delegates to the protocol entrypoint |
+| `skills/checkpoint/SKILL.md` | Codex-friendly `$checkpoint` wrapper that delegates to the protocol entrypoint |
 | `skills/protocol/templates/` | Baseline project-doc templates for state, trace, and decision documents |
 | `skills/protocol/scripts/handoff-manual.sh` | Shell-only fallback for manual handoff flow |
 | `adapters/` | Tool-specific thin pointers for Cursor, VS Code, Cline, OpenCode, Continue, and Gemini CLI |
@@ -143,7 +144,7 @@ team-collab-skills/
 ├── docs/                        # Design notes and researched boundaries
 ├── scripts/                     # Repo validation helpers
 └── skills/
-    ├── protocol/                # Full protocol and templates
+    ├── protocol/                # Slim protocol entrypoint, references, templates
     ├── handoff/                 # Codex wrapper
     └── checkpoint/              # Codex wrapper
 ```

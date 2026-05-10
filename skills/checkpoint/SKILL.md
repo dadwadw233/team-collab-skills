@@ -13,7 +13,7 @@ $checkpoint
 
 ## Required behavior
 
-1. Immediately follow the installed `team-collab-protocol` skill section "When the user invokes `/checkpoint`".
+1. Immediately follow the installed `team-collab-protocol` skill and its `references/checkpoint.md` flow.
 2. If the `team-collab-protocol` skill is not available in the current session, read it from:
 
 ```text
@@ -26,7 +26,7 @@ $checkpoint
 team-collab install-skills --agent codex --force
 ```
 
-4. Do not commit, push, pull, or append a handoff file during checkpoint. The full protocol owns exactly which state files may be edited.
+4. Do not commit, push, pull, or append a handoff file during checkpoint. The protocol references own exactly which state files may be edited.
 
 ## Compatibility note
 
