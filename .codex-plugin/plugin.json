@@ -3,8 +3,8 @@
   "version": "0.4.2",
   "description": "Codex entry points and protocol skills for the team-collab documentation workflow.",
   "author": {
-    "name": "Yuanhong Yu",
-    "url": "https://github.com/dadwadw233"
+    "name": "EMBODOT",
+    "url": "https://github.com/dadwadw233/team-collab-skills"
   },
   "homepage": "https://github.com/dadwadw233/team-collab-skills",
   "repository": "https://github.com/dadwadw233/team-collab-skills",
@@ -21,7 +21,7 @@
     "displayName": "Team Collab",
     "shortDescription": "Run team handoffs and checkpoints from Codex",
     "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session and $checkpoint during long sessions. The team-collab-protocol entrypoint routes to task-specific references for git sync, state docs, TODO ownership, and sensitive-data handling.",
-    "developerName": "Yuanhong Yu",
+    "developerName": "EMBODOT",
     "category": "Productivity",
     "capabilities": [
       "Interactive",
