@@ -1,6 +1,6 @@
 {
   "name": "team-collab",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Team collaboration protocol skills for AI agents working in shared Obsidian docs projects.",
   "author": {
     "name": "Yuanhong Yu",
@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dadwadw233/team-collab-skills",
   "repository": "https://github.com/dadwadw233/team-collab-skills",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "Apache-2.0 AND CC-BY-SA-4.0",
   "keywords": [
     "team-collab",
     "handoff",

@@ -1,6 +1,6 @@
 {
   "name": "team-collab",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Codex entry points and protocol skills for the team-collab documentation workflow.",
   "author": {
     "name": "Yuanhong Yu",
@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dadwadw233/team-collab-skills",
   "repository": "https://github.com/dadwadw233/team-collab-skills",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "Apache-2.0 AND CC-BY-SA-4.0",
   "keywords": [
     "team-collab",
     "handoff",

@@ -4,7 +4,7 @@
 
 <br>
 
-[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-f59e0b.svg)](./LICENSE)
+[![Code: Apache-2.0](https://img.shields.io/badge/Code-Apache--2.0-f59e0b.svg)](./LICENSE) [![Docs: CC BY-SA 4.0](https://img.shields.io/badge/Docs-CC%20BY--SA%204.0-14b8a6.svg)](./LICENSE-DOCS.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-14b8a6?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code/plugins)
 [![Codex](https://img.shields.io/badge/Codex-marketplace-10a37f?logo=openai&logoColor=white)](https://github.com/openai/codex)
 [![Adapters](https://img.shields.io/badge/Adapters-Cursor%20%7C%20VS%20Code%20%7C%20Cline%20%7C%20OpenCode%20%7C%20Continue%20%7C%20Gemini-0f172a)](#adapter-matrix)
@@ -185,4 +185,8 @@ CODEX_HOME="$(mktemp -d)" codex plugin marketplace add "$PWD"
 
 ## License
 
-PolyForm Noncommercial License 1.0.0 — commercial use is not permitted without a separate commercial license. See [LICENSE](./LICENSE).
+Team Collab Skills uses a dual-license model with required attribution to **EMBODOT（杭州具点科技有限公司）**.
+
+- Code, scripts, package/plugin metadata, and executable automation are licensed under the [Apache License 2.0](./LICENSE).
+- Documentation, README text, Markdown templates, skill instructions, protocol references, and written protocol content are licensed under [Creative Commons Attribution-ShareAlike 4.0 International](./LICENSE-DOCS.md) (CC BY-SA 4.0).
+- Redistributed or modified copies should preserve [NOTICE](./NOTICE) and include attribution: "Team Collab Skills by EMBODOT（杭州具点科技有限公司）".
