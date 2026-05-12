@@ -4,7 +4,7 @@
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-f59e0b.svg)](./LICENSE)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-f59e0b.svg)](./LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-14b8a6?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code/plugins)
 [![Codex](https://img.shields.io/badge/Codex-marketplace-10a37f?logo=openai&logoColor=white)](https://github.com/openai/codex)
 [![Adapters](https://img.shields.io/badge/Adapters-Cursor%20%7C%20VS%20Code%20%7C%20Cline%20%7C%20OpenCode%20%7C%20Continue%20%7C%20Gemini-0f172a)](#adapter-matrix)
@@ -185,4 +185,4 @@ CODEX_HOME="$(mktemp -d)" codex plugin marketplace add "$PWD"
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+PolyForm Noncommercial License 1.0.0 — commercial use is not permitted without a separate commercial license. See [LICENSE](./LICENSE).
