@@ -1,6 +1,6 @@
 # Team Collab Protocol Pointer
 
-Use for Agent, Chat, and Edit requests in repositories that opt into team-collab governance.
+Use for Agent, Chat, and Edit requests only in repositories that opt into team-collab governance.
 
 Activation signals:
 
@@ -8,4 +8,8 @@ Activation signals:
 - `AGENTS.md` references team-collab, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `obsidian-docs`.
 - The user asks about handoff, checkpoint, team docs workflow, TODO ownership, Feishu automation, project audit, or docs normalization.
 
-When active, follow repo-root `AGENTS.md` and the installed `team-collab-protocol` skill. Use `$handoff <topic>` and `$checkpoint`; do not duplicate or rewrite the full protocol here.
+When active, follow repo-root `AGENTS.md` and the installed `team-collab-protocol` skill. Use `$handoff <topic>` and `$checkpoint`.
+
+## Context budget
+
+This is a thin pointer. Read only the state quartet by default; do not load the full playbook, all handoffs, all dev records, or the whole Obsidian vault unless the task specifically needs them.

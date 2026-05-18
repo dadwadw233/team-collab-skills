@@ -86,6 +86,15 @@ team-collab doctor --project <project>
 
 Adapter files are intentionally **thin pointers**. Do not fork the protocol into every tool-specific rule file; keep `skills/protocol/SKILL.md` and `skills/protocol/references/` as the source of truth.
 
+## Context Budget
+
+Team-collab is designed for progressive loading:
+
+- Global pointers only detect strong team-project signals and route to the skill.
+- Normal team-project startup reads repo `AGENTS.md` plus `CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md`.
+- Handoffs, personal dev records, design docs, the full playbook, and the wider Obsidian vault load only when a task needs them.
+- A global `~/.team-collab/config.json` is not enough to activate the protocol in unrelated repositories.
+
 ---
 
 ## What Lives Here

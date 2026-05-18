@@ -32,6 +32,17 @@ When this protocol applies:
 - **Mid-session checkpoint**: update the state quartet only; do not commit or push.
 - **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
 
+
+## Context budget
+
+Use progressive loading so agent sessions find the right context without paying for the whole vault:
+
+- Do not scan the whole Obsidian vault, all project docs, all handoffs, or all personal dev records during startup.
+- Default startup context is repo-root `AGENTS.md` plus `CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md`.
+- Read recent `_handoffs/` only when the current task needs session history or the state quartet is stale/ambiguous.
+- Read design docs, specs, or `开发记录/<用户名>/` only when they are directly relevant to the user request.
+- Treat `team-collab docs-path` and the human playbook as reference lookup tools, not startup context.
+
 ## Arrival sequence
 
 Run this check sequence in order.

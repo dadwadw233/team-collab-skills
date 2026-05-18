@@ -1,11 +1,15 @@
 # Team Collab Protocol Pointer
 
-If this repository is a team project, follow the repo-root `AGENTS.md` first. Treat `AGENTS.md` as the source of truth for shared documentation governance.
+This is a thin pointer. If this repository is a team project, follow repo-root `AGENTS.md` first and use the installed `team-collab-protocol` skill as the source of truth.
 
-Strong signals that the protocol applies:
+Strong signals:
 
 - `obsidian-docs/` exists in this repo or an ancestor.
 - `AGENTS.md` references team-collab, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `obsidian-docs`.
-- The user asks about handoff, checkpoint, TODO ownership, docs normalization, or Feishu automation.
+- The user asks about handoff, checkpoint, TODO ownership, docs normalization, project audit, or Feishu automation.
 
-When active, read `obsidian-docs/CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md` before substantive work. Use `$handoff <topic>` for end-of-session handoff and `$checkpoint` for mid-session state snapshots.
+## Context budget
+
+Read only `obsidian-docs/CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md` before normal substantive work. Do not load the full playbook, all handoffs, all dev records, or the whole Obsidian vault unless the task specifically needs them.
+
+Use `$handoff <topic>` and `$checkpoint` for team-collab session flows.
