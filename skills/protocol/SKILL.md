@@ -6,68 +6,46 @@ description: |
 
 # Team Collaboration Protocol
 
-AI-side runtime protocol for team projects using the OPC collective documentation architecture. This entrypoint is intentionally slim: load only the reference file that matches the user's current task.
+Slim runtime entrypoint for team projects using the OPC collective docs architecture. Load only the reference that matches the current task; do not read the whole playbook or vault by default.
 
-## Activation signals
+## Activation
 
-Load this skill only from a strong team-project signal or an explicit user request.
+Use this protocol only from a strong signal:
 
-Strong signals:
-- The current directory or an ancestor contains `obsidian-docs/`.
-- The current repo's `AGENTS.md` or `CLAUDE.md` references this protocol, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
-- The current directory is equal to or underneath a registered `codePath`, `docsPath`, or `docsGitRoot` in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
-- The user explicitly asks for handoff, checkpoint, team docs workflow, PR/MR docs governance, TODO owner claims, doc standards, Feishu automation, docs repo audit/normalization, or new-member docs onboarding.
+- `obsidian-docs/` exists in the current repo or an ancestor.
+- Repo-root `AGENTS.md` / `CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
+- The cwd is under a registered `codePath`, `docsPath`, or `docsGitRoot` in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
+- The user asks about handoff, checkpoint, team docs workflow, TODO ownership, Feishu automation, docs audit, setup, migration, or normalization.
 
-Weak signal:
-- `~/.team-collab/config.json` or `~/.team-docs-config` exists somewhere on the machine.
+Weak signal: a global team-collab config exists somewhere. Do not activate from that alone; it is a project registry, not proof that every repo is governed.
 
-Do **not** load or enforce this full protocol solely from the weak signal. Many users keep a global config after joining one team project; it must not make unrelated repos inherit team docs behavior.
+## Context budget
 
-## Context snapshot
+- Global/project pointers should only trigger this skill; they should not duplicate protocol details.
+- On normal startup in a team project, read repo-root `AGENTS.md` and the state quartet only: `CURRENT.md`, `RISKS.md`, `NEXT.md`, `TODO.md`.
+- Read recent `_handoffs/`, personal `开发记录/`, design docs, or the human playbook only when the user task requires that history.
+- Do not scan the whole Obsidian vault, all docs, or all memories to orient yourself.
+- If multiple references could apply, load the smallest set that covers the task.
 
-- Code lives on GitHub or GitLab; code changes go through the code platform PR/MR flow.
-- Docs live in an Obsidian-backed docs directory, usually available as `obsidian-docs/` from the code repo. Existing vault subdirectories are valid after user confirmation; do not migrate them just because a template path exists.
-- Project-level agent instructions live in repo-root `AGENTS.md`; `CLAUDE.md`, if present, should normally be a thin pointer.
-- Shared project state is the quartet `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`.
-- Session audit trails are append-only files under `obsidian-docs/_handoffs/`.
-- Personal dev records must live under `obsidian-docs/开发记录/<用户名>/`.
+## Reference router
 
-## Load the right reference
-
-| Situation | Load this file |
+| Situation | Load |
 |---|---|
-| Session start, repo orientation, docs sync, state quartet reading | `references/startup-and-audit.md` |
-| Setup, onboarding, migration, compliance/audit, Feishu integration | `references/startup-and-audit.md` |
+| Session start, repo orientation, docs sync, setup, onboarding, migration, Feishu, compliance, audit | `references/startup-and-audit.md` |
 | `$handoff <topic>` or `/handoff <topic>` end-of-session flow | `references/handoff.md` |
 | `$checkpoint` or `/checkpoint` mid-session snapshot | `references/checkpoint.md` |
-| Any git sync, push, force-push, conflict, rejected push, hook/gitleaks issue | `references/git-policy.md` |
+| Git sync, push, force-push, conflicts, rejected push, hooks, gitleaks | `references/git-policy.md` |
 | Creating or substantially editing project docs, frontmatter, filenames, taxonomy | `references/docs-standards.md` |
-| Starting, claiming, completing, blocking, or reassigning TODO.md items | `references/todo-ownership.md` |
-
-If multiple rows apply, load the smallest set needed. For example, a handoff that updates TODO.md should use `handoff.md`, `git-policy.md`, and `todo-ownership.md`; it does not need the full audit reference.
-
-## Default session flow
-
-1. Confirm a strong activation signal. If only a global config exists, do not enforce team-collab.
-2. If inside a team project, read `references/startup-and-audit.md` and follow its startup sequence before substantive work.
-3. Keep code changes in the code repo and project memory in `obsidian-docs/`.
-4. Use `$checkpoint` for a local mid-session state update; use `$handoff <topic>` for end-of-session sync.
-5. Prefer the npm CLI for setup checks: `team-collab register ... --dry-run`, `team-collab doctor --project <project>`, and `team-collab docs-path` when the playbook path is unknown.
+| Starting, claiming, completing, blocking, or reassigning TODO items | `references/todo-ownership.md` |
 
 ## Always-on constraints
 
-- Never force-push protected/shared/unclear branches: `main`, `master`, `release/*`, `prod/*`, docs repo default branches, other people's branches, or branches with unclear ownership.
-- Self-owned non-protected working branches may be force-pushed after rebase, commit cleanup, or conflict repair. Prefer `--force-with-lease`; use plain `--force` only when ownership is certain and no one else has pushed. Check `git branch --show-current`, `git status -sb`, and `git branch -vv` first.
+- Never force-push protected/shared/unclear branches: `main`, `master`, `release/*`, `prod/*`, docs default branches, other people's branches, or unclear ownership branches.
+- Self-owned non-protected working branches may be force-pushed after rebase or cleanup; prefer `--force-with-lease` and first check branch, status, and upstream.
 - Never `git commit --no-verify`; never bypass gitleaks or equivalent secret checks.
-- Never blindly retry or auto-recover from semantic git failures: non-fast-forward rejection, protected branch rejection, permission denied, hook/gitleaks failure, or rebase conflicts must stop and be reported.
-- Never write secrets, credentials, customer private data, unreleased internal service endpoints, or unannounced commercial secrets into docs.
-- In docs repos, never `git add .`; precise-add only the intended files.
+- Never blindly recover from semantic git failures: non-fast-forward, protected-branch rejection, permission denied, hook/gitleaks failure, or rebase conflicts must stop and be reported.
+- Never write secrets, credentials, customer private data, unreleased internal endpoints, or unannounced commercial secrets into docs.
+- In docs repos, never `git add .`; precise-add intended files only.
 - Do not fabricate a handoff for an empty session.
-- Do not create new top-level `开发日志/`, `devlog/`, or mixed-author devlog files; personal records go under `开发记录/<用户名>/`.
-- Do not modify a TODO line owned by someone else without explicit user direction.
-
-## Templates and scripts
-
-- Templates live in `templates/`: `OVERVIEW.md`, `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`, `handoff.md`, `ADR.md`.
-- Manual fallback script: `scripts/handoff-manual.sh`.
-- Human-readable playbook: `gitlab.com/<team-group>/team-collab-playbook`.
+- Personal dev records go under `obsidian-docs/开发记录/<用户名>/`; do not create parallel devlog folders.
+- Do not modify another owner's TODO item without explicit user direction.
