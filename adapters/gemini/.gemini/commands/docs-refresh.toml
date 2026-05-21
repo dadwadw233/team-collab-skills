@@ -1,0 +1,6 @@
+description = "Refresh Obsidian docs from a staleness audit, archiving stale content first."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as the staleness audit source or refresh topic: {{args}}
+
+Read repo-root AGENTS.md and the installed team-collab-protocol skill. Then follow references/docs-refresh.md: audit stale docs, archive old content before rewriting active docs, prefer useful Mermaid diagrams over long prose, and verify the resulting diff. Do not improvise a partial docs refresh from this command alone.
+"""

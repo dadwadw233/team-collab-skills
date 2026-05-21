@@ -13,3 +13,5 @@ When active, follow repo-root `AGENTS.md` and the installed `team-collab-protoco
 ## Context budget
 
 This is a thin pointer. Read only the state quartet by default; do not load the full playbook, all handoffs, all dev records, or the whole Obsidian vault unless the task specifically needs them.
+
+Use `$docs-refresh <audit-doc>` or `/docs-refresh <audit-doc>` when updating Obsidian docs from a staleness audit: archive stale content first, rewrite active docs as current truth, and prefer useful Mermaid diagrams over long prose.

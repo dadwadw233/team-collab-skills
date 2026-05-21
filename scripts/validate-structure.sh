@@ -13,8 +13,11 @@ required_files=(
   "skills/protocol/references/git-policy.md"
   "skills/protocol/references/docs-standards.md"
   "skills/protocol/references/todo-ownership.md"
+  "skills/protocol/references/docs-refresh.md"
   "skills/handoff/SKILL.md"
   "skills/checkpoint/SKILL.md"
+  "skills/docs-refresh/SKILL.md"
+  "skills/docs-refresh/agents/openai.yaml"
   "adapters/cursor/.cursor/rules/team-collab.mdc"
   "adapters/vscode/.github/copilot-instructions.md"
   "adapters/vscode/.github/instructions/team-collab.instructions.md"
@@ -25,6 +28,7 @@ required_files=(
   "adapters/gemini/GEMINI.md"
   "adapters/gemini/.gemini/commands/handoff.toml"
   "adapters/gemini/.gemini/commands/checkpoint.toml"
+  "adapters/gemini/.gemini/commands/docs-refresh.toml"
 )
 
 for path in "${required_files[@]}"; do
@@ -61,6 +65,7 @@ required_refs = [
     "references/git-policy.md",
     "references/docs-standards.md",
     "references/todo-ownership.md",
+    "references/docs-refresh.md",
 ]
 missing = [ref for ref in required_refs if ref not in text]
 if missing:
@@ -68,6 +73,13 @@ if missing:
 startup = Path("skills/protocol/references/startup-and-audit.md").read_text(encoding="utf-8")
 if "Do not scan the whole Obsidian vault" not in startup:
     raise SystemExit("startup-and-audit.md must prevent whole-vault loading")
+docs_refresh = Path("skills/protocol/references/docs-refresh.md").read_text(encoding="utf-8")
+for phrase in ["staleness audit", "archive-first", "Mermaid", "active docs"]:
+    if phrase not in docs_refresh:
+        raise SystemExit(f"docs-refresh.md must mention {phrase}")
+wrapper = Path("skills/docs-refresh/SKILL.md").read_text(encoding="utf-8")
+if "$docs-refresh" not in wrapper or "references/docs-refresh.md" not in wrapper:
+    raise SystemExit("docs-refresh wrapper must expose the Codex command and route to the protocol reference")
 for adapter in [
     "adapters/cursor/.cursor/rules/team-collab.mdc",
     "adapters/vscode/.github/copilot-instructions.md",
@@ -79,6 +91,8 @@ for adapter in [
     content = Path(adapter).read_text(encoding="utf-8")
     if "Context budget" not in content:
         raise SystemExit(f"{adapter} must include a context budget reminder")
+    if "docs-refresh" not in content:
+        raise SystemExit(f"{adapter} must mention docs-refresh trigger")
 PY
 
 echo "team-collab-skills structure ok"

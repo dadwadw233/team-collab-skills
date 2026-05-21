@@ -15,7 +15,7 @@ Use this protocol only from a strong signal:
 - `obsidian-docs/` exists in the current repo or an ancestor.
 - Repo-root `AGENTS.md` / `CLAUDE.md` references team-collab, `obsidian-docs`, CURRENT/NEXT/RISKS/TODO, `_handoffs`, or `开发记录/<用户名>/`.
 - The cwd is under a registered `codePath`, `docsPath`, or `docsGitRoot` in `~/.team-collab/config.json` or legacy `~/.team-docs-config`.
-- The user asks about handoff, checkpoint, team docs workflow, TODO ownership, Feishu automation, docs audit, setup, migration, or normalization.
+- The user asks about handoff, checkpoint, docs refresh, team docs workflow, TODO ownership, Feishu automation, docs audit, setup, migration, or normalization.
 
 Weak signal: a global team-collab config exists somewhere. Do not activate from that alone; it is a project registry, not proof that every repo is governed.
 
@@ -36,6 +36,7 @@ Weak signal: a global team-collab config exists somewhere. Do not activate from 
 | `$checkpoint` or `/checkpoint` mid-session snapshot | `references/checkpoint.md` |
 | Git sync, push, force-push, conflicts, rejected push, hooks, gitleaks | `references/git-policy.md` |
 | Creating or substantially editing project docs, frontmatter, filenames, taxonomy | `references/docs-standards.md` |
+| `$docs-refresh <audit>` / `/docs-refresh <audit>` or updating Obsidian docs from a stale audit/dev record | `references/docs-refresh.md` |
 | Starting, claiming, completing, blocking, or reassigning TODO items | `references/todo-ownership.md` |
 
 ## Always-on constraints

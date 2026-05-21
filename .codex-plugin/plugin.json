@@ -1,6 +1,6 @@
 {
   "name": "team-collab",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Codex entry points and protocol skills for the team-collab documentation workflow.",
   "author": {
     "name": "EMBODOT",
@@ -14,13 +14,14 @@
     "handoff",
     "checkpoint",
     "obsidian",
-    "agent-skills"
+    "agent-skills",
+    "docs-refresh"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Team Collab",
-    "shortDescription": "Run team handoffs and checkpoints from Codex",
-    "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session and $checkpoint during long sessions. The team-collab-protocol entrypoint routes to task-specific references for git sync, state docs, TODO ownership, and sensitive-data handling.",
+    "shortDescription": "Run handoffs, checkpoints, and docs refreshes from Codex",
+    "longDescription": "Adds Codex-friendly team-collab protocol skills. Use $handoff at the end of a session, $checkpoint during long sessions, and $docs-refresh when updating stale Obsidian docs. The team-collab-protocol entrypoint routes to task-specific references for git sync, state docs, TODO ownership, and sensitive-data handling.",
     "developerName": "EMBODOT",
     "category": "Productivity",
     "capabilities": [
@@ -34,6 +35,7 @@
     "defaultPrompt": [
       "$handoff session-summary",
       "$checkpoint",
+      "$docs-refresh obsidian-docs/开发记录/<user>/YYYY-MM-DD-staleness-audit.md",
       "Read the team-collab project state"
     ],
     "brandColor": "#2563EB",
