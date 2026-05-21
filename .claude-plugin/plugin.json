@@ -1,7 +1,7 @@
 {
   "name": "team-collab",
-  "version": "0.4.2",
-  "description": "Team collaboration protocol skills for AI agents working in shared Obsidian docs projects.",
+  "version": "0.4.3",
+  "description": "Team collaboration protocol skills for handoff, checkpoint, and stale Obsidian docs refresh workflows.",
   "author": {
     "name": "EMBODOT",
     "url": "https://github.com/dadwadw233/team-collab-skills"
@@ -14,6 +14,7 @@
     "handoff",
     "checkpoint",
     "obsidian",
-    "agent-skills"
+    "agent-skills",
+    "docs-refresh"
   ]
 }

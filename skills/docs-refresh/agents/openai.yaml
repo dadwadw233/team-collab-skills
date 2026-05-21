@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Refresh"
+  short_description: "Refresh stale Obsidian docs"
+  default_prompt: "$docs-refresh <audit-doc-or-topic>"
