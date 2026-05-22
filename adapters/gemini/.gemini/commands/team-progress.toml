@@ -1,0 +1,6 @@
+description = "Summarize recent teammate progress, blockers, and review needs."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as the required time window for recent teammate progress: {{args}}
+
+Read repo-root AGENTS.md and the installed team-collab-protocol skill. Then follow references/team-progress.md: check bounded dev records, handoffs, state docs, and open PRs/MRs for the current team project; identify teammate progress, blockers, and items needing the user's review or approval. Keep the answer concise and sectioned. Do not edit docs, commit, push, or notify groups.
+"""
