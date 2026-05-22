@@ -23,7 +23,7 @@
 AI coding sessions fail teams in boring ways: context is lost, TODO ownership is unclear, docs drift, and handoffs become chat archaeology. `team-collab-skills` turns the operating rules into reusable agent runtime artifacts:
 
 - **State quartet**: `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`
-- **Session rituals**: `$checkpoint` during long work, `$handoff <topic>` at the end, `$docs-refresh <audit-doc>` when docs are stale
+- **Session rituals**: `$checkpoint` during long work, `$handoff <topic>` at the end, `$team-progress <window>` for recent teammate progress, `$docs-refresh <audit-doc>` when docs are stale
 - **TODO ownership**: explicit `@owner` claim mechanics to avoid parallel-agent races
 - **Docs governance**: code changes go through PR/MR, shared docs go through docs MR, personal records stay under `开发记录/<用户名>/`
 - **Multi-agent support**: native Claude/Codex packaging plus thin adapters for mainstream IDE/CLI tools
@@ -54,10 +54,11 @@ Codex entrypoints:
 ```text
 $checkpoint
 $handoff <topic>
+$team-progress 24h
 $docs-refresh <audit-doc-or-topic>
 ```
 
-Codex may not support arbitrary custom top-level slash commands. If `/handoff`, `/checkpoint`, or `/docs-refresh` reaches the model as plain text, the global/project `AGENTS.md` pointer should treat it as equivalent to the `$...` form.
+Codex may not support arbitrary custom top-level slash commands. If `/handoff`, `/checkpoint`, `/team-progress`, or `/docs-refresh` reaches the model as plain text, the global/project `AGENTS.md` pointer should treat it as equivalent to the `$...` form.
 
 ### Team CLI Installer
 
@@ -82,7 +83,7 @@ team-collab doctor --project <project>
 | **Cline** | Workspace rules | `adapters/cline/.clinerules/team-collab.md` | Copy into project when Cline is used |
 | **OpenCode** | `AGENTS.md` + `opencode.json` instructions | `adapters/opencode/AGENTS.md`, `adapters/opencode/opencode.json` | Prefer root `AGENTS.md`; use `opencode.json` for explicit references |
 | **Continue** | Local rules | `adapters/continue/.continue/rules/team-collab.md` | Copy into `.continue/rules/` |
-| **Gemini CLI** | `GEMINI.md` + custom commands | `adapters/gemini/GEMINI.md`, `.gemini/commands/*.toml` | Copy into project for `/handoff`, `/checkpoint`, and `/docs-refresh` commands |
+| **Gemini CLI** | `GEMINI.md` + custom commands | `adapters/gemini/GEMINI.md`, `.gemini/commands/*.toml` | Copy into project for `/handoff`, `/checkpoint`, `/team-progress`, and `/docs-refresh` commands |
 | **Manual** | Markdown + shell helper | `skills/protocol/SKILL.md`, `skills/protocol/scripts/handoff-manual.sh` | Read and run manually if no skill-native agent is available |
 
 Adapter files are intentionally **thin pointers**. Do not fork the protocol into every tool-specific rule file; keep `skills/protocol/SKILL.md` and `skills/protocol/references/` as the source of truth.
@@ -103,9 +104,10 @@ Team-collab is designed for progressive loading:
 | Runtime artifact | Purpose |
 |------------------|---------|
 | `skills/protocol/SKILL.md` | Slim runtime entrypoint: activation rules, quick context, hard constraints, and references to task-specific protocol files |
-| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, docs refresh, git policy, docs standards, and TODO ownership |
+| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, team progress, docs refresh, git policy, docs standards, and TODO ownership |
 | `skills/handoff/SKILL.md` | Codex-friendly `$handoff <topic>` wrapper that delegates to the protocol entrypoint |
 | `skills/checkpoint/SKILL.md` | Codex-friendly `$checkpoint` wrapper that delegates to the protocol entrypoint |
+| `skills/team-progress/SKILL.md` | Codex-friendly `$team-progress <window>` wrapper for teammate progress, blockers, and PR/MR review needs |
 | `skills/docs-refresh/SKILL.md` | Codex-friendly `$docs-refresh <audit-doc>` wrapper for stale Obsidian docs refresh |
 | `skills/protocol/templates/` | Baseline project-doc templates for state, trace, and decision documents |
 | `skills/protocol/scripts/handoff-manual.sh` | Shell-only fallback for manual handoff flow |
@@ -128,7 +130,7 @@ Team-collab is designed for progressive loading:
           ┌───────────────┼────────────────┐
           ▼               ▼                ▼
    Claude plugin     Codex marketplace   IDE/CLI adapters
-   skills/*          $handoff/$checkpoint/$docs-refresh thin pointers
+   skills/*          $handoff/$checkpoint/$team-progress/$docs-refresh
           │               │                │
           └───────────────┼────────────────┘
                           ▼
@@ -158,6 +160,7 @@ team-collab-skills/
     ├── protocol/                # Slim protocol entrypoint, references, templates
     ├── handoff/                 # Codex wrapper
     ├── checkpoint/              # Codex wrapper
+    ├── team-progress/           # Codex wrapper
     └── docs-refresh/            # Codex wrapper
 ```
 
@@ -179,7 +182,7 @@ CODEX_HOME="$(mktemp -d)" codex plugin marketplace add "$PWD"
 
 ## 中文简介
 
-`team-collab-skills` 是团队协作文档协议的 **AI runtime 仓库**。它把 handoff、checkpoint、docs-refresh、CURRENT/NEXT/RISKS/TODO、TODO `@owner` 认领、Obsidian 项目文档规范、代码 PR/MR 与文档 MR 边界，封装成 Claude/Codex 可安装的 skill/plugin，同时为 Cursor、VS Code、Cline、OpenCode、Continue、Gemini CLI 提供轻量 adapter。
+`team-collab-skills` 是团队协作文档协议的 **AI runtime 仓库**。它把 handoff、checkpoint、team-progress、docs-refresh、CURRENT/NEXT/RISKS/TODO、TODO `@owner` 认领、Obsidian 项目文档规范、代码 PR/MR 与文档 MR 边界，封装成 Claude/Codex 可安装的 skill/plugin，同时为 Cursor、VS Code、Cline、OpenCode、Continue、Gemini CLI 提供轻量 adapter。
 
 边界很明确：
 

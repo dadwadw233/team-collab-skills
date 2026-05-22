@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Progress"
+  short_description: "Summarize recent teammate activity"
+  default_prompt: "$team-progress 24h"

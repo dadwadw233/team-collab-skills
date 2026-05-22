@@ -14,8 +14,11 @@ required_files=(
   "skills/protocol/references/docs-standards.md"
   "skills/protocol/references/todo-ownership.md"
   "skills/protocol/references/docs-refresh.md"
+  "skills/protocol/references/team-progress.md"
   "skills/handoff/SKILL.md"
   "skills/checkpoint/SKILL.md"
+  "skills/team-progress/SKILL.md"
+  "skills/team-progress/agents/openai.yaml"
   "skills/docs-refresh/SKILL.md"
   "skills/docs-refresh/agents/openai.yaml"
   "adapters/cursor/.cursor/rules/team-collab.mdc"
@@ -28,6 +31,7 @@ required_files=(
   "adapters/gemini/GEMINI.md"
   "adapters/gemini/.gemini/commands/handoff.toml"
   "adapters/gemini/.gemini/commands/checkpoint.toml"
+  "adapters/gemini/.gemini/commands/team-progress.toml"
   "adapters/gemini/.gemini/commands/docs-refresh.toml"
 )
 
@@ -66,6 +70,7 @@ required_refs = [
     "references/docs-standards.md",
     "references/todo-ownership.md",
     "references/docs-refresh.md",
+    "references/team-progress.md",
 ]
 missing = [ref for ref in required_refs if ref not in text]
 if missing:
@@ -80,6 +85,13 @@ for phrase in ["staleness audit", "archive-first", "Mermaid", "active docs"]:
 wrapper = Path("skills/docs-refresh/SKILL.md").read_text(encoding="utf-8")
 if "$docs-refresh" not in wrapper or "references/docs-refresh.md" not in wrapper:
     raise SystemExit("docs-refresh wrapper must expose the Codex command and route to the protocol reference")
+team_progress = Path("skills/protocol/references/team-progress.md").read_text(encoding="utf-8")
+for phrase in ["time window", "PRs/MRs", "成员进展", "需要你处理"]:
+    if phrase not in team_progress:
+        raise SystemExit(f"team-progress.md must mention {phrase}")
+wrapper = Path("skills/team-progress/SKILL.md").read_text(encoding="utf-8")
+if "$team-progress" not in wrapper or "references/team-progress.md" not in wrapper:
+    raise SystemExit("team-progress wrapper must expose the Codex command and route to the protocol reference")
 for adapter in [
     "adapters/cursor/.cursor/rules/team-collab.mdc",
     "adapters/vscode/.github/copilot-instructions.md",
@@ -93,6 +105,8 @@ for adapter in [
         raise SystemExit(f"{adapter} must include a context budget reminder")
     if "docs-refresh" not in content:
         raise SystemExit(f"{adapter} must mention docs-refresh trigger")
+    if "team-progress" not in content:
+        raise SystemExit(f"{adapter} must mention team-progress trigger")
 PY
 
 echo "team-collab-skills structure ok"

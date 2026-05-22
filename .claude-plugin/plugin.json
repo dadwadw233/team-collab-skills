@@ -1,7 +1,7 @@
 {
   "name": "team-collab",
-  "version": "0.4.3",
-  "description": "Team collaboration protocol skills for handoff, checkpoint, and stale Obsidian docs refresh workflows.",
+  "version": "0.4.4",
+  "description": "Team collaboration protocol skills for handoff, checkpoint, team progress, and stale Obsidian docs refresh workflows.",
   "author": {
     "name": "EMBODOT",
     "url": "https://github.com/dadwadw233/team-collab-skills"
@@ -15,6 +15,7 @@
     "checkpoint",
     "obsidian",
     "agent-skills",
-    "docs-refresh"
+    "docs-refresh",
+    "team-progress"
   ]
 }
