@@ -1,5 +1,6 @@
 ---
 name: team-collab-protocol
+version: 0.5.0
 description: |
   Use when the current repo is explicitly governed by team-collab: `obsidian-docs/` exists in cwd/ancestor, repo `AGENTS.md`/`CLAUDE.md` imports team-collab, the cwd is under a registered code/docs path, or the user asks for team-collab handoff/checkpoint/docs governance/Feishu automation. Do not use solely because a global config file exists.
 ---
