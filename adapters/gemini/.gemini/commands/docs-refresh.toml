@@ -1,3 +1,7 @@
+# team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0
+# team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh
+# team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill
+
 description = "Refresh Obsidian docs from a staleness audit, archiving stale content first."
 prompt = """
 Use the team-collab protocol. Treat the user arguments as the staleness audit source or refresh topic: {{args}}
