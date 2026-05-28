@@ -15,7 +15,7 @@ target_lines: 100
 # <项目名> CURRENT
 
 > [!summary]
-> **团队必读入口**。一屏以内；本文只写当前真相。务必言简意赅、避免流水账；详细路线图、过程记录、历史决策放到其他文件，并在此用标准 Markdown 链接引用。
+> **团队必读入口**。`CURRENT.md` 是手写 summary cache：只写当前真相和短 rollup，长解释必须放到 [NEXT](./NEXT.md)、[RISKS](./RISKS.md)、[TODO](./TODO.md)、ADR、handoff、开发记录或设计文档，并在此用标准 Markdown 链接引用。
 
 ## 一句话状态
 
@@ -43,7 +43,7 @@ target_lines: 100
 
 ## 最近完成（里程碑级，最多 3-5 条）
 
-- <里程碑完成项>；证据见 [_handoffs](./_handoffs/)
+- <一行 rollup>；证据见 [_handoffs](./_handoffs/) 或相关设计/ADR
 - ...
 
 ## 关键决策

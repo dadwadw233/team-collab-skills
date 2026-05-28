@@ -4,7 +4,15 @@ Use this reference when the user asks to update Obsidian project docs from a sta
 
 ## Purpose
 
-A docs refresh is not an append-only changelog. It turns stale project memory into current project memory: archive old claims, rewrite active docs to reflect the present, and prefer diagrams over prose where structure matters.
+A docs refresh is not an append-only changelog and not a scheduled ritual. It is reactive maintenance: archive old claims, rewrite active docs to reflect the present, and prefer diagrams over prose where structure matters.
+
+Trigger it only when one of these inputs exists:
+
+- a staleness audit, dev record, or external review flags specific drift
+- a major project shift landed and state/design docs no longer describe reality
+- lint or health reports surface measurable drift that needs human-readable repair
+
+If a project needs calendar-based refreshes, revisit generated `CURRENT.md` rollups instead of turning `$docs-refresh` into a recurring manual chore.
 
 ## Entry points
 
