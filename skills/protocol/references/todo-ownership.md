@@ -55,6 +55,7 @@ Determine `<user>` from `git config user.name` or explicit conversation context.
 
 - Progress updates go in `最近完成` only when tasks are actually done.
 - If a task is bigger than expected and should split, add sub-tasks under the parent in `进行中`, each with `@you since <today>`. Keep parent as umbrella.
+- Keep TODO concise. A TODO line is an action, not a design note; move background and evidence to NEXT/design docs/devlogs and link with standard Markdown.
 
 ## Completion at handoff time
 
@@ -68,6 +69,8 @@ For tasks you own that finished this session:
 For tasks you own that did not finish: leave in `进行中`; optionally add a sub-note like `completed sub-tasks X of Y; blocker: ...`.
 
 For tasks you do not own: do not touch. If evidence shows their task is done, leave a note for the owner but do not mark `[x]` yourself.
+
+Keep `最近完成` to the most recent 15-20 items. Archive or delete older completed items; durable history lives in `_handoffs/` and `开发记录/<用户名>/`.
 
 ## Stale claim release
 

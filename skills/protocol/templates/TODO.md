@@ -6,12 +6,13 @@ updated: YYYY-MM-DD
 status: current
 tags:
   - todo
+target_lines: 120
 ---
 
 # <项目名> TODO
 
 > [!summary]
-> **事务级任务清单**（区别于 [[NEXT]] 的战略方向）。每条 `进行中` / `阻塞` / `最近完成` 必须有 `@owner` 和时间戳。认领规则：移动一条从 `待办` 到 `进行中` 必须**立刻 commit + push**，谁先 push 谁赢。
+> **事务级任务清单**（区别于 [NEXT](./NEXT.md) 的战略方向）。务必言简意赅，避免流水账；每条是一个可认领动作，背景和证据用标准 Markdown 链接指向 NEXT/设计文档/devlog/archive。每条 `进行中` / `阻塞` / `最近完成` 必须有 `@owner` 和时间戳。
 
 ## 进行中
 

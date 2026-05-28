@@ -26,6 +26,7 @@ AI coding sessions fail teams in boring ways: context is lost, TODO ownership is
 - **Session rituals**: `$checkpoint` during long work, `$handoff <topic>` at the end, `$team-progress <window>` for recent teammate progress, `$docs-refresh <audit-doc>` when docs are stale
 - **TODO ownership**: explicit `@owner` claim mechanics to avoid parallel-agent races
 - **Docs governance**: code changes go through PR/MR, shared docs go through docs MR, personal records stay under `开发记录/<用户名>/`
+- **State hygiene**: state docs stay concise, structured, and link-driven instead of becoming chronological PR/commit logs
 - **Multi-agent support**: native Claude/Codex packaging plus thin adapters for mainstream IDE/CLI tools
 
 The human playbook and npm CLI live in [`embodot/team-collab-playbook`](https://gitlab.com/embodot/team-collab-playbook). This repository is the **agent runtime source of truth**.
