@@ -45,6 +45,7 @@ Use these warnings to compact, archive, or split docs; do not blindly rewrite hi
 - `CURRENT.md` should stay about 80-120 lines; `NEXT/RISKS/TODO` should stay about 80-150 lines. If over budget, compact first and move history/evidence to `_handoffs/`, `开发记录/<用户名>/`, `archive/`, ADR, or a focused design doc.
 - Each bullet carries one fact, risk, decision, or action. Do not pack background, evidence, acceptance logs, and PR lists into one item.
 - Critical references must use standard Markdown links such as `[V1.6 PRD](./EvoNav/32-V1.6-PRD.md)`. Obsidian wikilinks are allowed only as non-critical prose.
+- Boundary lint is warning-only and intentionally conservative: it catches long unlinked `CURRENT.md` rollups, PR/MR or commit lists in `CURRENT.md`, `NEXT.md` items without action or acceptance criteria, `RISKS.md` entries without status/action, TODO lines with long background prose, and exact/normalized repeated lines across state docs.
 
 ## Naming rules
 
