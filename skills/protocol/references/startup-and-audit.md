@@ -31,6 +31,7 @@ When this protocol applies:
 - **Existing Obsidian vault subdirectory**: treat it as `vault-subdir`; do not copy or migrate it into `Projects/<project>-docs` unless the user explicitly approves that migration.
 - **Mid-session checkpoint**: update the state quartet only; do not commit or push.
 - **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
+- **Health check**: when a previous session may have stopped mid-push, or multiple agents touched state docs, run `team-collab health --docs obsidian-docs` or `team-collab doctor --project <project> --health`. It is read-only and uses git log only.
 
 
 ## Context budget
@@ -55,6 +56,7 @@ Run this check sequence in order.
    - If standalone, `git -C obsidian-docs remote -v` should usually point to a `-docs` repo.
    - If it is a vault subdirectory, sync and commit through the parent vault git root, while editing only the selected project docs directory.
    - Run `git log <upstream>..HEAD --oneline` in the code repo and in the docs git root when an upstream exists.
+   - If docs are ahead of upstream with `CURRENT.md` / `NEXT.md` / `RISKS.md` / `TODO.md` or `_handoffs/` commits, report that a previous session may not have published and ask whether to retry the docs push before editing more state.
 
 ### Step B: sync remote docs
 
@@ -86,6 +88,7 @@ From the code repo root, prefer:
 ```bash
 team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run
 team-collab doctor --project <project>
+team-collab doctor --project <project> --health
 <team-collab-playbook>/scripts/audit-project-docs.sh obsidian-docs . <username>
 ```
 

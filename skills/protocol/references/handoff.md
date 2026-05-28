@@ -124,11 +124,18 @@ In the docs repo:
 3. `git commit -m "docs(handoff): <topic> YYYY-MM-DD"`
    - Never `--no-verify`; gitleaks pre-commit must run.
 4. If commit fails due to gitleaks: do not retry, do not `--no-verify`. Show the report to the user.
-5. `git pull --rebase origin main`
+5. Before rebasing, check whether upstream changed a state file you also touched:
+   ```bash
+   git fetch origin main
+   git diff --name-only HEAD..origin/main -- CURRENT.md NEXT.md RISKS.md TODO.md
+   git diff --name-only HEAD~1..HEAD -- CURRENT.md NEXT.md RISKS.md TODO.md
+   ```
+   For a vault-subdir docs layout, run the same check from the parent git root with the project docs path prefixed. If the same state file appears on both sides, inspect the relevant diff before finalizing. If both sides changed the same section or the merge meaning is ambiguous, stop and ask the user; do not auto-merge semantic state.
+6. `git pull --rebase origin main`
    - Conflict -> abort rebase, keep local commit, report, stop.
-6. `git push origin main`
+7. `git push origin main`
    - Rejected -> report to user, suggest manual `git pull --rebase && git push`; never force-push the docs default branch.
-7. Report commit hash and push result.
+8. Report commit hash and push result.
 
 ## Step 8: concise final report
 
