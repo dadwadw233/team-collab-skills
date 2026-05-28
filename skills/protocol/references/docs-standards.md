@@ -39,6 +39,7 @@ Use these warnings to compact, archive, or split docs; do not blindly rewrite hi
 - `trace` and `decision` forms are append-only on history. An existing `_handoffs/2026-04-20-...md` or `ADR-005-...md` cannot be semantically rewritten. Fix typos only.
 - To supersede a decision, create a new ADR with `status: supersedes ADR-005` and flip the old one to `status: deprecated`.
 - One thing per file for `trace` and `decision`: one session per handoff, one change topic per dev record, one decision per ADR.
+- Handoffs may include optional provenance frontmatter: `agent` and `host_class`. Fill only known facts; use `unknown` or omit fields rather than inventing model/runtime/host details.
 - When modifying any doc, update `updated: YYYY-MM-DD` in frontmatter.
 - `state` docs (`CURRENT/NEXT/RISKS/TODO`) are short current-state caches, not devlogs, PR lists, or commit timelines. Keep them brief, structured, and link-driven.
 - `CURRENT.md` is a hand-maintained summary cache. It may contain one-line rollups that link to canonical detail in `TODO.md`, `RISKS.md`, `NEXT.md`, ADRs, handoffs, or design docs. Rollups must stay short; if they require explanation, the explanation belongs in the canonical target and `CURRENT.md` should link out.
