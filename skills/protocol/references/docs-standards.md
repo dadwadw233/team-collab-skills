@@ -20,6 +20,19 @@ tags: [<at least one>]
 
 If creating a new doc and you cannot commit to a `form`, stop and ask the user which form fits.
 
+## Warning-only lint contract
+
+`team-collab lint` checks Markdown frontmatter and optional line budgets as warnings, not hard failures:
+
+- Required keys: `title`, `form`, `updated`, `status`, and `tags`.
+- `form` must be one of `state`, `trace`, `decision`, `design`, `reference`, or `index`.
+- `updated` must match `YYYY-MM-DD`.
+- `target_lines`, when present, must be numeric.
+- Body length over `target_lines * 1.2` is an over-budget warning; over `target_lines * 1.5` is a stronger warning.
+- Missing frontmatter in legacy docs is still a warning-first cleanup signal, not an automatic rewrite mandate.
+
+Use these warnings to compact, archive, or split docs; do not blindly rewrite historical `trace` or `decision` files just to silence lint.
+
 ## Form rules
 
 - `form` value must match the doc's structure and lifecycle. A trace document that rewrites history, or a state doc that appends timestamped entries, is a form violation.
