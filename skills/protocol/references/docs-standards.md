@@ -41,6 +41,7 @@ Use these warnings to compact, archive, or split docs; do not blindly rewrite hi
 - One thing per file for `trace` and `decision`: one session per handoff, one change topic per dev record, one decision per ADR.
 - When modifying any doc, update `updated: YYYY-MM-DD` in frontmatter.
 - `state` docs (`CURRENT/NEXT/RISKS/TODO`) are short current-state caches, not devlogs, PR lists, or commit timelines. Keep them brief, structured, and link-driven.
+- `CURRENT.md` is a hand-maintained summary cache. It may contain one-line rollups that link to canonical detail in `TODO.md`, `RISKS.md`, `NEXT.md`, ADRs, handoffs, or design docs. Rollups must stay short; if they require explanation, the explanation belongs in the canonical target and `CURRENT.md` should link out.
 - `CURRENT.md` should stay about 80-120 lines; `NEXT/RISKS/TODO` should stay about 80-150 lines. If over budget, compact first and move history/evidence to `_handoffs/`, `开发记录/<用户名>/`, `archive/`, ADR, or a focused design doc.
 - Each bullet carries one fact, risk, decision, or action. Do not pack background, evidence, acceptance logs, and PR lists into one item.
 - Critical references must use standard Markdown links such as `[V1.6 PRD](./EvoNav/32-V1.6-PRD.md)`. Obsidian wikilinks are allowed only as non-critical prose.
