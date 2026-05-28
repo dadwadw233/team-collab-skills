@@ -29,6 +29,19 @@ Git detects textual conflicts, not semantic duplicate work. If two agents write 
 - [x] <task> @<owner> YYYY-MM-DD
 ```
 
+## Warning-only lint contract
+
+`team-collab lint` checks TODO ownership shape as warnings, not hard failures:
+
+- `进行中`: every task line has exactly one `@owner` and `since YYYY-MM-DD`.
+- `阻塞`: every task line has exactly one `@owner`, `since YYYY-MM-DD`, and `(blocked by: ...)`.
+- `待办`: task lines stay unowned unless explicitly marked pre-assigned.
+- `最近完成`: every completed task has exactly one `@owner` and completion date `YYYY-MM-DD`.
+- Duplicate-looking task text across sections should carry stable identity (`id: ...` or `blocks: NEXT#...`).
+- Keep `最近完成` to 20 items or fewer.
+
+The lint does not prove semantic uniqueness, does not auto-fix TODO.md, and does not require task IDs for all tasks in this release.
+
 ## Before starting work
 
 1. `cd obsidian-docs && git pull --rebase`
