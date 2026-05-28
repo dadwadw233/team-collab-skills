@@ -1,3 +1,7 @@
+<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0 -->
+<!-- team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh -->
+<!-- team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill -->
+
 # Team Collab Protocol Pointer
 
 Apply only when the workspace has `obsidian-docs/`, team-collab references in `AGENTS.md`/`CLAUDE.md`, or the user asks about handoff, checkpoint, team progress, team docs workflow, TODO ownership, Feishu automation, project audit, or docs normalization.

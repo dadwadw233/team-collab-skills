@@ -2,6 +2,11 @@
 applyTo: "**"
 ---
 
+<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0 -->
+<!-- team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh -->
+<!-- team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill -->
+
+
 # Team Collab Protocol Pointer
 
 For team-collab projects, follow repo-root `AGENTS.md` and the installed `team-collab-protocol` skill from `https://github.com/dadwadw233/team-collab-skills`.

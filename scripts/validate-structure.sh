@@ -21,6 +21,7 @@ required_files=(
   "skills/team-progress/agents/openai.yaml"
   "skills/docs-refresh/SKILL.md"
   "skills/docs-refresh/agents/openai.yaml"
+  "adapters/ADAPTER-SOURCE.md"
   "adapters/cursor/.cursor/rules/team-collab.mdc"
   "adapters/vscode/.github/copilot-instructions.md"
   "adapters/vscode/.github/instructions/team-collab.instructions.md"
@@ -138,21 +139,39 @@ for phrase in ["time window", "PRs/MRs", "成员进展", "需要你处理"]:
 wrapper = Path("skills/team-progress/SKILL.md").read_text(encoding="utf-8")
 if "$team-progress" not in wrapper or "references/team-progress.md" not in wrapper:
     raise SystemExit("team-progress wrapper must expose the Codex command and route to the protocol reference")
-for adapter in [
+adapter_files = [
     "adapters/cursor/.cursor/rules/team-collab.mdc",
     "adapters/vscode/.github/copilot-instructions.md",
+    "adapters/vscode/.github/instructions/team-collab.instructions.md",
     "adapters/cline/.clinerules/team-collab.md",
     "adapters/continue/.continue/rules/team-collab.md",
     "adapters/opencode/AGENTS.md",
     "adapters/gemini/GEMINI.md",
-]:
+    "adapters/gemini/.gemini/commands/handoff.toml",
+    "adapters/gemini/.gemini/commands/checkpoint.toml",
+    "adapters/gemini/.gemini/commands/team-progress.toml",
+    "adapters/gemini/.gemini/commands/docs-refresh.toml",
+]
+pointer_docs = [adapter for adapter in adapter_files if not adapter.endswith(".toml")]
+required_marker_phrases = [
+    "team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0",
+    "team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh",
+    "team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill",
+]
+required_commands = ["handoff", "checkpoint", "team-progress", "docs-refresh"]
+
+for adapter in adapter_files:
+    content = Path(adapter).read_text(encoding="utf-8")
+    for phrase in required_marker_phrases:
+        if phrase not in content:
+            raise SystemExit(f"{adapter} missing adapter drift marker: {phrase}")
+    for command in required_commands:
+        if command not in content:
+            raise SystemExit(f"{adapter} must mention {command}")
+for adapter in pointer_docs:
     content = Path(adapter).read_text(encoding="utf-8")
     if "Context budget" not in content:
         raise SystemExit(f"{adapter} must include a context budget reminder")
-    if "docs-refresh" not in content:
-        raise SystemExit(f"{adapter} must mention docs-refresh trigger")
-    if "team-progress" not in content:
-        raise SystemExit(f"{adapter} must mention team-progress trigger")
 PY
 
 echo "team-collab-skills structure ok"

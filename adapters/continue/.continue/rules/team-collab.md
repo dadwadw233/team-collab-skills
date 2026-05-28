@@ -1,3 +1,7 @@
+<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0 -->
+<!-- team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh -->
+<!-- team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill -->
+
 # Team Collab Protocol Pointer
 
 Use for Agent, Chat, and Edit requests only in repositories that opt into team-collab governance.
