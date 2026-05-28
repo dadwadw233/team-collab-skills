@@ -6,13 +6,13 @@ updated: YYYY-MM-DD
 status: current
 tags:
   - risks
-target_lines: 300
+target_lines: 100
 ---
 
 # <项目名> RISKS
 
 > [!summary]
-> 已知风险与阻塞。每次 session 结束时确认：新风险加入活跃表；已消除的划掉并移入末尾 archive 段；**不删除历史**——让未来能追溯"曾经担心过什么 / 怎么解决的"。
+> 已知风险与阻塞。务必言简意赅，避免流水账；只保留活跃风险、状态、行动和标准 Markdown 链接。已消除风险移入末尾 archive 段或 `archive/`。
 
 ## 当前活跃风险
 

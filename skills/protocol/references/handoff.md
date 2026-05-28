@@ -96,16 +96,18 @@ New risks found, or previously-active risks resolved. New risks also go into `RI
 
 ## Step 6: update state quartet
 
-Edit only sections that changed. Do not rewrite entire files.
+Edit only sections that changed. Do not rewrite entire files unless compacting stale state. State docs must be brief, structured, and link-driven; do not append chronological logs.
 
-- `CURRENT.md`: milestones / active branch / recent completions / current focus, if changed.
-- `NEXT.md`: strike finished items; append new next steps; move resolved decisions out to `CURRENT.md` or an ADR.
+- Before adding new state, remove or archive obsolete prose. Long background, PR evidence, experiment details, and acceptance logs belong in `_handoffs/`, `开发记录/<用户名>/`, `archive/`, ADR, or focused design docs; leave one concise summary plus a standard Markdown link.
+- `CURRENT.md`: milestones / active branch / current focus / 3-5 milestone-level recent completions, if changed.
+- `NEXT.md`: strike finished items; append concise next steps with acceptance criteria and links; move resolved decisions out to `CURRENT.md` or an ADR.
 - `RISKS.md`: add new risks to active table; move resolved ones to archive.
 - `TODO.md`:
   - Tasks you finished: flip `[ ]` -> `[x]`, move from `进行中` to `最近完成`, keep `@owner`, replace timestamp with completion date.
   - Tasks with progress but not finished: stay in `进行中`, optionally add a sub-note.
   - Tasks newly blocked: move to `阻塞` with `blocked by: <reason>`.
   - Tasks newly discovered for later: append to `待办`.
+  - If `最近完成` exceeds 15-20 items, archive or drop old completed items; history remains in handoffs/devlogs.
   - Do not touch tasks whose `@owner` is not you.
 
 Load `todo-ownership.md` before editing TODO items.

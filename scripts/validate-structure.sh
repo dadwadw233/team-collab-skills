@@ -82,6 +82,13 @@ docs_refresh = Path("skills/protocol/references/docs-refresh.md").read_text(enco
 for phrase in ["staleness audit", "archive-first", "Mermaid", "active docs"]:
     if phrase not in docs_refresh:
         raise SystemExit(f"docs-refresh.md must mention {phrase}")
+docs_standards = Path("skills/protocol/references/docs-standards.md").read_text(encoding="utf-8")
+for phrase in ["short current-state caches", "standard Markdown links", "PR lists", "80-150"]:
+    if phrase not in docs_standards:
+        raise SystemExit(f"docs-standards.md must mention state hygiene phrase: {phrase}")
+todo_ownership = Path("skills/protocol/references/todo-ownership.md").read_text(encoding="utf-8")
+if "15-20" not in todo_ownership:
+    raise SystemExit("todo-ownership.md must cap completed TODO retention")
 wrapper = Path("skills/docs-refresh/SKILL.md").read_text(encoding="utf-8")
 if "$docs-refresh" not in wrapper or "references/docs-refresh.md" not in wrapper:
     raise SystemExit("docs-refresh wrapper must expose the Codex command and route to the protocol reference")
