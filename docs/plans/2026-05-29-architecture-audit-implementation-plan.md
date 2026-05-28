@@ -520,17 +520,17 @@ Use this section as the live tracking board. Update only in implementation plann
 
 | ID | Status | Owner | PR/MR |
 |---|---|---|---|
-| TC-ARCH-01 | pending | unassigned | TBD |
-| TC-ARCH-02 | pending | unassigned | TBD |
-| TC-ARCH-03 | pending | unassigned | TBD |
-| TC-ARCH-04 | pending | unassigned | TBD |
-| TC-ARCH-05 | pending | unassigned | TBD |
-| TC-ARCH-06 | pending | unassigned | TBD |
-| TC-ARCH-07 | pending | unassigned | TBD |
-| TC-ARCH-08 | pending | unassigned | TBD |
-| TC-ARCH-09 | pending | unassigned | TBD |
-| TC-ARCH-10 | pending | unassigned | TBD |
-| TC-ARCH-11 | pending | unassigned | TBD |
+| TC-ARCH-01 | done | Codex | Skills #14; Playbook !40 |
+| TC-ARCH-02 | done | Codex | Skills #15; Playbook !41 |
+| TC-ARCH-03 | done | Codex | Playbook !42 |
+| TC-ARCH-04 | done | Codex | Skills #16; Playbook !43 |
+| TC-ARCH-05 | done | Codex | Skills #17; Playbook !44 |
+| TC-ARCH-06 | done | Codex | Skills #18; Playbook !45 |
+| TC-ARCH-07 | done | Codex | Skills #19; Playbook !46 |
+| TC-ARCH-08 | done | Codex | Skills #20; Playbook !47 |
+| TC-ARCH-09 | done | Codex | Skills #21; Playbook !48 |
+| TC-ARCH-10 | done | Codex | Skills #22; Playbook !49 |
+| TC-ARCH-11 | done | Codex | Skills #23 |
 
 ## Release Strategy
 
