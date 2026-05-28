@@ -7,7 +7,7 @@ Use this reference for session arrival, setup, onboarding, migration, Feishu int
 When this protocol applies:
 
 - **Code** lives in a code repository on GitHub or GitLab. Internal team projects should prefer GitLab `embodot/<project>` for new repos or mirrors, while existing GitHub repos may remain on GitHub.
-- **Docs** live in an Obsidian-backed project docs directory, accessed from `obsidian-docs/` in the code repo. New projects should prefer a separate GitLab docs repository, but existing projects may already use a project subdirectory inside a larger Obsidian vault. Both layouts are valid after explicit user confirmation. The actual local code/docs paths may be custom and must be discovered before setup.
+- **Docs** live in an Obsidian-backed project docs directory, accessed from `obsidian-docs/` in the code repo. New projects should prefer a separate GitLab docs repository, but existing projects may already use a project subdirectory inside a larger Obsidian vault. Both layouts are valid after explicit user confirmation. Cloud-synced paths such as iCloud/Dropbox/OneDrive/Google Drive are allowed only with an explicit risk warning or registered acknowledgement. The actual local code/docs paths may be custom and must be discovered before setup.
 - **Repository governance** is split by purpose:
   - Code repo: `main` is protected; code changes go through the code platform's PR/MR flow; never force-push protected/shared/unclear branches; GitHub PRs may request Codex/Copilot review, GitLab MRs follow project review settings, and humans decide.
   - GitLab docs repo: `main` is protected with no direct push by default; high-level shared docs go through MR; personal process records may follow the project's relaxed direct-push path.
@@ -29,6 +29,7 @@ When this protocol applies:
   - `team-collab init --join <project> --dry-run`
   - `team-collab doctor --project <project>`
 - **Existing Obsidian vault subdirectory**: treat it as `vault-subdir`; do not copy or migrate it into `Projects/<project>-docs` unless the user explicitly approves that migration.
+- **Cloud-synced docs root**: warn, but do not block normal startup. If the project registration has `cloudSyncAcknowledged: true`, treat the repeated warning as acknowledged. `team-collab doctor --strict` still fails on the risk.
 - **Mid-session checkpoint**: update the state quartet only; do not commit or push.
 - **End-of-session handoff**: write one handoff, update changed state docs, then commit/rebase/push docs strictly.
 - **Health check**: when a previous session may have stopped mid-push, or multiple agents touched state docs, run `team-collab health --docs obsidian-docs` or `team-collab doctor --project <project> --health`. It is read-only and uses git log only.
@@ -88,6 +89,7 @@ From the code repo root, prefer:
 ```bash
 team-collab register <project> --code <code-dir> --docs <docs-dir> --dry-run
 team-collab doctor --project <project>
+team-collab doctor --project <project> --strict
 team-collab doctor --project <project> --health
 <team-collab-playbook>/scripts/audit-project-docs.sh obsidian-docs . <username>
 ```
@@ -95,6 +97,8 @@ team-collab doctor --project <project> --health
 If `team-collab` is not installed, ask the user to install `@embodot/collab@latest`. If the playbook checkout path is unknown, run `team-collab docs-path` first; only search likely local paths such as `~/team-playbook`, `~/projects/team-collab-playbook`, or the user's Obsidian vault if the npm CLI is unavailable.
 
 For setup or migration, do not clone, copy, move docs, rewrite config, or repair symlinks before you have summarized the detected layout and the user has approved the plan. Existing Obsidian vault subdirectories are legitimate docs locations; normalize them in place unless the user explicitly asks for a standalone docs repo migration.
+
+If `doctor` reports a cloud-sync path risk, summarize it as a filesystem reliability warning, not a security incident. The owner may keep that layout and set `cloudSyncAcknowledged: true` in the registered project entry after accepting the risk. Do not add the acknowledgement yourself unless the user explicitly asks for it.
 
 Interpret audit output:
 
