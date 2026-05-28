@@ -1,5 +1,6 @@
 ---
 name: docs-refresh
+requires_protocol: ">=0.5.0,<0.6.0"
 description: Use when the user invokes `$docs-refresh`, asks to update Obsidian project docs from a stale audit/dev record, or wants old docs archived while active docs become current.
 ---
 

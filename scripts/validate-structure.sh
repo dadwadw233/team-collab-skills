@@ -54,7 +54,46 @@ grep -R "team-collab-playbook.git" .agents .codex-plugin .claude-plugin skills a
 }
 
 python3 - <<'PY'
+import json
 from pathlib import Path
+
+PROTOCOL_VERSION = "0.5.0"
+PROTOCOL_RANGE = ">=0.5.0,<0.6.0"
+
+def frontmatter(path):
+    text = Path(path).read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        raise SystemExit(f"{path} missing skill frontmatter")
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        raise SystemExit(f"{path} missing skill frontmatter terminator")
+    metadata = {}
+    for line in text[4:end].splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        metadata[key.strip()] = value
+    return metadata
+
+protocol_meta = frontmatter("skills/protocol/SKILL.md")
+if protocol_meta.get("version") != PROTOCOL_VERSION:
+    raise SystemExit("team-collab-protocol skill version metadata is missing or stale")
+for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh"]:
+    metadata = frontmatter(f"skills/{wrapper}/SKILL.md")
+    if metadata.get("requires_protocol") != PROTOCOL_RANGE:
+        raise SystemExit(f"{wrapper} wrapper must declare requires_protocol: \"{PROTOCOL_RANGE}\"")
+
+for path in [".codex-plugin/plugin.json", ".claude-plugin/plugin.json"]:
+    version = json.loads(Path(path).read_text(encoding="utf-8")).get("version")
+    if version != PROTOCOL_VERSION:
+        raise SystemExit(f"{path} version must match protocol version {PROTOCOL_VERSION}")
+marketplace = json.loads(Path(".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+versions = [plugin.get("version") for plugin in marketplace.get("plugins", []) if plugin.get("name") == "team-collab"]
+if versions != [PROTOCOL_VERSION]:
+    raise SystemExit(".claude-plugin/marketplace.json team-collab version must match protocol version")
 
 skill = Path("skills/protocol/SKILL.md")
 text = skill.read_text(encoding="utf-8")
