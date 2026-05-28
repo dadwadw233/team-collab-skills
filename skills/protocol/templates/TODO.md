@@ -13,11 +13,12 @@ target_lines: 120
 
 > [!summary]
 > **事务级任务清单**（区别于 [NEXT](./NEXT.md) 的战略方向）。务必言简意赅，避免流水账；每条是一个可认领动作，背景和证据用标准 Markdown 链接指向 NEXT/设计文档/devlog/archive。每条 `进行中` / `阻塞` / `最近完成` 必须有 `@owner` 和时间戳。
+> TODO 认领是公开意图声明 + 乐观冲突检测，不提供严格互斥；容易混淆的任务请保留稳定身份（如 `id: T-YYYYMMDD-NN` 或 `blocks: NEXT#N`）。
 
 ## 进行中
 
-- [ ] <任务描述> @<owner> since YYYY-MM-DD (blocks: NEXT#N)
-- [ ] <另一个任务> @<owner> since YYYY-MM-DD
+- [ ] <任务描述> @<owner> since YYYY-MM-DD (id: T-YYYYMMDD-NN; blocks: NEXT#N)
+- [ ] <另一个任务> @<owner> since YYYY-MM-DD (id: T-YYYYMMDD-NN)
 
 ## 阻塞
 
@@ -26,7 +27,7 @@ target_lines: 120
 ## 待办（未认领，先到先得）
 
 - [ ] <任务，不带 owner，谁想做谁领走>
-- [ ] <任务>
+- [ ] <任务> (id: T-YYYYMMDD-NN)
 
 ## 最近完成
 

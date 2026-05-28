@@ -2,7 +2,9 @@
 
 Use this reference before starting, claiming, completing, blocking, or reassigning items in `obsidian-docs/TODO.md`.
 
-TODO ownership is a git-backed distributed lock. Claiming must be immediately committed and pushed; otherwise another agent may take the same task.
+TODO ownership is a public intent declaration with optimistic collision detection. Claiming must be immediately committed and pushed; otherwise another agent may take the same task before seeing your intent.
+
+Git detects textual conflicts, not semantic duplicate work. If two agents write the same logical task in different words, both lines can land without a merge conflict. Use a stable task identity when possible, such as `id: T-YYYYMMDD-NN` or `blocks: NEXT#N`, especially for work that may be claimed by multiple agents.
 
 ## Hard rules
 
@@ -15,13 +17,13 @@ TODO ownership is a git-backed distributed lock. Claiming must be immediately co
 
 ```markdown
 ## 进行中
-- [ ] <task> @<owner> since YYYY-MM-DD [other metadata]
+- [ ] <task> @<owner> since YYYY-MM-DD [id: T-YYYYMMDD-NN] [blocks: NEXT#N]
 
 ## 阻塞
 - [ ] <task> @<owner> since YYYY-MM-DD (blocked by: <reason>)
 
 ## 待办（未认领，先到先得）
-- [ ] <task>                  # no @owner = unclaimed
+- [ ] <task> [id: T-YYYYMMDD-NN]  # no @owner = unclaimed
 
 ## 最近完成
 - [x] <task> @<owner> YYYY-MM-DD
@@ -42,6 +44,8 @@ TODO ownership is a git-backed distributed lock. Claiming must be immediately co
 
 1. Remove the line from `## 待办`.
 2. Append to `## 进行中`: `- [ ] <original-text> @<user> since <today>` plus metadata.
+   - Preserve existing `id: ...` or `blocks: NEXT#...` metadata.
+   - If the task has no stable identity and could be confused with another task, add one before committing.
 3. `git add TODO.md`
 4. `git commit -m "chore(todo): claim \"<short task>\" @<user>"`
 5. `git push`
