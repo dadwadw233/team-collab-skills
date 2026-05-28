@@ -68,6 +68,8 @@ title: handoff YYYY-MM-DD <topic>
 date: YYYY-MM-DD
 project: <project-name-from-git-remote>
 author: <user name if known, else agent name>
+agent: <optional vendor/model-or-unknown via runtime-or-unknown>
+host_class: <mac|4090|cloud-runner|unknown>
 topic: <topic>
 tags: [handoff]
 ---
@@ -93,6 +95,8 @@ New risks found, or previously-active risks resolved. New risks also go into `RI
 ## Suggested next steps
 1-5 ordered actions at a granularity that lets the next person start immediately.
 ```
+
+`agent` and `host_class` are optional provenance fields. Fill them only when the runtime identity is actually visible; otherwise use `unknown` or omit them. Prefer coarse host classes (`mac`, `4090`, `cloud-runner`, `unknown`) over invented machine details.
 
 ## Step 6: update state quartet
 
@@ -123,6 +127,7 @@ In the docs repo:
 2. `git status` -> show staged files to the user.
 3. `git commit -m "docs(handoff): <topic> YYYY-MM-DD"`
    - Never `--no-verify`; gitleaks pre-commit must run.
+   - Optional trailers are allowed when known: `Agent: <vendor>/<model-or-unknown> via <runtime-or-unknown>` and `Host-Class: mac|4090|cloud-runner|unknown`. Do not invent missing provenance.
 4. If commit fails due to gitleaks: do not retry, do not `--no-verify`. Show the report to the user.
 5. Before rebasing, check whether upstream changed a state file you also touched:
    ```bash

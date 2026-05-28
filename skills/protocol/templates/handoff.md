@@ -5,6 +5,9 @@ topic: [implementation]
 date: YYYY-MM-DD
 project: <项目名>
 author: <作者名>
+# Optional provenance. Use `unknown` or omit if not known; never guess.
+agent: <vendor/model-or-unknown via runtime-or-unknown>
+host_class: <mac|4090|cloud-runner|unknown>
 updated: YYYY-MM-DD
 status: active
 tags:
