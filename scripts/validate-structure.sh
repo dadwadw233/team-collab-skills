@@ -56,9 +56,9 @@ grep -R "team-collab-playbook.git" .agents .codex-plugin .claude-plugin skills a
 
 python3 - <<'PY'
 import json
+import re
 from pathlib import Path
 
-PROTOCOL_VERSION = "0.5.3"
 PROTOCOL_RANGE = ">=0.5.0,<0.6.0"
 
 def frontmatter(path):
@@ -69,19 +69,49 @@ def frontmatter(path):
     if end == -1:
         raise SystemExit(f"{path} missing skill frontmatter terminator")
     metadata = {}
-    for line in text[4:end].splitlines():
-        if ":" not in line:
+    block_key = None
+    for line_no, line in enumerate(text[4:end].splitlines(), start=2):
+        if not line.strip():
             continue
+        if block_key is not None:
+            if line.startswith((" ", "\t")):
+                continue
+            block_key = None
+        if line.startswith((" ", "\t")):
+            raise SystemExit(f"{path}:{line_no} frontmatter has unsupported indentation outside a block scalar")
+        if line.strip().startswith("-"):
+            raise SystemExit(
+                f"{path}:{line_no} frontmatter uses unsupported block-list syntax; "
+                "upgrade the parser before adding lists"
+            )
+        if ":" not in line:
+            raise SystemExit(
+                f"{path}:{line_no} frontmatter line has no ':'; "
+                "supported syntax is simple key: value or key: | block scalars"
+            )
         key, value = line.split(":", 1)
+        key = key.strip()
+        if not key:
+            raise SystemExit(f"{path}:{line_no} frontmatter key is empty")
         value = value.strip()
+        if value in {"|", ">", "|-", ">-", "|+", ">+"}:
+            metadata[key] = ""
+            block_key = key
+            continue
+        if value.startswith(("[", "{")):
+            raise SystemExit(
+                f"{path}:{line_no} frontmatter uses unsupported flow syntax ({value[:1]}); "
+                "upgrade the parser before adding lists or nested mappings"
+            )
         if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
             value = value[1:-1]
-        metadata[key.strip()] = value
+        metadata[key] = value
     return metadata
 
 protocol_meta = frontmatter("skills/protocol/SKILL.md")
-if protocol_meta.get("version") != PROTOCOL_VERSION:
-    raise SystemExit("team-collab-protocol skill version metadata is missing or stale")
+PROTOCOL_VERSION = protocol_meta.get("version")
+if not PROTOCOL_VERSION or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", PROTOCOL_VERSION):
+    raise SystemExit("team-collab-protocol skill version metadata is missing or invalid")
 for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh"]:
     metadata = frontmatter(f"skills/{wrapper}/SKILL.md")
     if metadata.get("requires_protocol") != PROTOCOL_RANGE:
@@ -154,7 +184,7 @@ adapter_files = [
 ]
 pointer_docs = [adapter for adapter in adapter_files if not adapter.endswith(".toml")]
 required_marker_phrases = [
-    "team-collab-protocol-source: skills/protocol/SKILL.md@0.5.3",
+    f"team-collab-protocol-source: skills/protocol/SKILL.md@{PROTOCOL_VERSION}",
     "team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh",
     "team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill",
 ]
