@@ -58,7 +58,7 @@ python3 - <<'PY'
 import json
 from pathlib import Path
 
-PROTOCOL_VERSION = "0.5.0"
+PROTOCOL_VERSION = "0.5.3"
 PROTOCOL_RANGE = ">=0.5.0,<0.6.0"
 
 def frontmatter(path):
@@ -154,7 +154,7 @@ adapter_files = [
 ]
 pointer_docs = [adapter for adapter in adapter_files if not adapter.endswith(".toml")]
 required_marker_phrases = [
-    "team-collab-protocol-source: skills/protocol/SKILL.md@0.5.0",
+    "team-collab-protocol-source: skills/protocol/SKILL.md@0.5.3",
     "team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh",
     "team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill",
 ]
