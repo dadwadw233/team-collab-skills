@@ -31,6 +31,8 @@ AI coding sessions fail teams in boring ways: context is lost, TODO ownership is
 
 The human playbook and npm CLI live in [`embodot/team-collab-playbook`](https://gitlab.com/embodot/team-collab-playbook). This repository is the **agent runtime source of truth**.
 
+Runtime scope is intentionally narrow: this repo ships skills, protocol references, adapters, manifests, scripts, and user-facing README/license material. Architecture audits, implementation plans, brainstorms, and other process notes belong outside the public runtime tree; local drafts may live in the gitignored `_meta/` directory.
+
 ---
 
 ## Quick Start
@@ -155,7 +157,6 @@ team-collab-skills/
 │   ├── continue/
 │   └── gemini/
 ├── assets/                      # README visuals
-├── docs/                        # Design notes and researched boundaries
 ├── scripts/                     # Repo validation helpers
 └── skills/
     ├── protocol/                # Slim protocol entrypoint, references, templates
