@@ -16,6 +16,31 @@ Use this reference for git sync, push, force-push, conflicts, rejected pushes, p
    - High-level shared docs (`OVERVIEW`, PRD, test plan, project design, architecture design, roadmap, major decisions, `CURRENT/NEXT/RISKS/TODO`, `决策日志`): GitLab docs MR.
    - Personal process records (`开发记录/<用户名>/...`, personal research notes, `_handoffs/...`): direct push is allowed when the project docs repo explicitly keeps that relaxed path.
 
+## Runtime repo scope discipline
+
+A **runtime artifact repository** is one that ships content to end users via plugin/marketplace install — for example `team-collab-skills`, `kepano/obsidian-skills`, or any repo whose `README.md` claims it is an "agent runtime source of truth." These repos hold ONLY runtime artifacts: `SKILL.md`, `references/`, `templates/`, `adapters/`, plugin/marketplace manifests, validation scripts, and the user-facing `README.md` / `LICENSE` / `NOTICE` / `ATTRIBUTION`.
+
+They MUST NOT carry dev-time process artifacts:
+
+- audits, post-mortems, architecture reviews
+- implementation plans, roadmaps, tracking boards
+- brainstorms, design exploration notes
+- session handoffs / dev records / checkpoints
+
+Reasons:
+
+1. Plugin users pull the whole repo at install time; process docs inflate the install surface and obscure the actual runtime contract.
+2. Process docs have a different form (`trace` / `design` snapshots) than runtime artifacts (`reference` / `index`), and mixing forms in one repo violates the `one form per file, one purpose per repo` discipline from `docs-standards.md`.
+3. Process docs are append-only history (per `docs-standards.md` form rules) but runtime artifacts are mutable canonical truth; making both live in the same repo blurs the lifecycle.
+
+Where process docs should live:
+
+- **Preferred:** in a project-level `obsidian-docs/` (the team-collab pattern that other projects use). When the runtime project itself does not yet have one, host them in a sibling `<project>-meta` repo or directory.
+- **Acceptable transitional:** a gitignored `_meta/` directory at repo root, for local-only working drafts.
+- **Unacceptable:** committed under `docs/audits/`, `docs/plans/`, `docs/brainstorms/`, or similar inside the runtime repo.
+
+A runtime repo's `.gitignore` SHOULD include `_meta/` as a default escape hatch so contributors can keep local working notes without polluting the public tree. Validation scripts MAY warn (not fail) when committed `docs/` contents look like dev-process artifacts (file name patterns: `*-audit*`, `*-plan*`, `*-post-mortem*`, `*-followup*`, `YYYY-MM-DD-` dated drafts without `decision`/`design` form frontmatter).
+
 ## Retry policy
 
 Retry transient transport failures such as DNS hiccups, TLS connection reset, proxy failures, or temporary remote unavailable messages when the retry does not change repository state. If the user has authorized it, unsetting proxy variables and retrying the same read/push command is acceptable.
