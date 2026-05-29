@@ -179,6 +179,15 @@ CODEX_HOME="$(mktemp -d)" codex plugin marketplace add "$PWD"
 
 `validate-structure.sh` checks required manifests/adapters and ensures runtime files do not point at the human playbook repository.
 
+## Release
+
+```bash
+scripts/bump-version.sh 0.5.4
+scripts/validate-structure.sh
+```
+
+`skills/protocol/SKILL.md` is the protocol version source of truth. The bump script rewrites plugin manifests and adapter drift markers, then leaves the diff for manual review.
+
 ---
 
 ## 中文简介
