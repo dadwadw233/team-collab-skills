@@ -66,6 +66,7 @@ For `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`, `OVERVIEW.md`, and design do
 - Include links to archived material only when a reader needs the history.
 - Update frontmatter `updated: YYYY-MM-DD` on every substantially edited Markdown file.
 - Avoid vague prose like "recently changed"; use concrete module names, branch names, dates, and status.
+- For `NEXT.md`, follow the [action and acceptance examples](./docs-standards.md#nextmd-action-and-acceptance-examples) instead of guessing the lint-passing shape.
 
 ## Step 4: diagram-first rule
 

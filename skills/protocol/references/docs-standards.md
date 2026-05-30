@@ -48,6 +48,22 @@ Use these warnings to compact, archive, or split docs; do not blindly rewrite hi
 - Critical references must use standard Markdown links such as `[V1.6 PRD](./EvoNav/32-V1.6-PRD.md)`. Obsidian wikilinks are allowed only as non-critical prose.
 - Boundary lint is warning-only and intentionally conservative: it catches long unlinked `CURRENT.md` rollups, PR/MR or commit lists in `CURRENT.md`, `NEXT.md` items without action or acceptance criteria, `RISKS.md` entries without status/action, TODO lines with long background prose, and exact/normalized repeated lines across state docs.
 
+### NEXT.md action and acceptance examples
+
+NEXT items must be parseable by a future agent without re-reading the whole doc. A verb, a concrete artifact, and acceptance criteria or a link are the minimum viable shape.
+
+Bad examples that lint should flag:
+
+- `推进 sandbox 配置`
+- `计划 next stage 工作`
+- `决定后续方向`
+
+Good examples that future agents can execute:
+
+- `更新 ApprovalDecision，新增 expiry 字段，acceptance: 新建/更新两个测试 + lint 0 warning`
+- `编写 stage-N+1 PRD，输出 \`14-Stage-N+1-PRD.md\`，acceptance: 包含范围/非目标/验收三段`
+- `把 PR42 review feedback 修完合并，acceptance: 0 unresolved P1`
+
 ## Naming rules
 
 - `state` -> uppercase no prefix: `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`.
