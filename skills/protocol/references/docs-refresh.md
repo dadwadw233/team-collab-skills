@@ -34,9 +34,11 @@ If a project needs calendar-based refreshes, revisit generated `CURRENT.md` roll
 
 Create a working map before editing:
 
-| File | stale claim | current truth | action | archive target |
-|---|---|---|---|---|
-| `OVERVIEW.md` | old architecture | new module split | rewrite + archive old section | `archive/YYYY-MM-DD-<topic>/OVERVIEW-old-architecture.md` |
+| File | drift | drift type | current truth | action | archive target |
+|---|---|---|---|---|---|
+| `CURRENT.md` | reads like a chronological PR log | `form` | active state docs are short status caches | rewrite + archive completion history | `archive/YYYY-MM-DD-<topic>/CURRENT-changelog.md` |
+
+Drift types: `claim` means content no longer matches reality; `form` means content violates form rules; `archive-debt` means completion history accumulated without being archived. When trigger is lint/health, populate one row per warning category; drift type is usually `form` or `archive-debt`.
 
 Actions:
 
