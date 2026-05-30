@@ -90,11 +90,12 @@ Before reporting completion:
 
 1. `git diff --stat` and inspect every changed file.
 2. Confirm stale claims named by the audit were removed from active docs or intentionally marked `no-op`.
-3. Confirm archived content exists when material was removed.
-4. Confirm active docs still link to the right current entry points.
-5. Confirm frontmatter dates were updated.
-6. Confirm Mermaid blocks render syntactically enough for Markdown review: fenced as ```mermaid and not nested inside lists/tables.
-7. Run `git diff --check`.
+3. If the trigger was a lint or health report (trigger #3 above), re-run the same command and confirm it returns `0 warning(s)`. Partial reduction is not acceptable — either fully resolve every reported drift item or mark the specific item `no-op` with a written justification.
+4. Confirm archived content exists when material was removed.
+5. Confirm active docs still link to the right current entry points.
+6. Confirm frontmatter dates were updated.
+7. Confirm Mermaid blocks render syntactically enough for Markdown review: fenced as ```mermaid and not nested inside lists/tables.
+8. Run `git diff --check`.
 
 ## Report format
 
