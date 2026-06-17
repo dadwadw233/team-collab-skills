@@ -31,6 +31,16 @@ digests/YYYY-MM-DD-HHMM.md
 
 The PRD is the wave brief and contract plan. `pr-plan.md` is the merge/dependency table. `decision-board.md` is the coordinator-owned human-decision list. Per-agent status files are the canonical task state. Claims files are CLI-materialized views rebuilt from status files.
 
+## Wave file contracts
+
+Keep these invariants when reading, reviewing, or editing wave files:
+
+- `PRD.md` is `form: design` and keeps the fixed 10-section skeleton: Human Brief, North Star, Repository / Docs State, Architecture / Contract Plan, PR Plan, File Ownership / Conflict Surface, Resource / Claim Plan, Decision Board, Review Gates, and Result Summary.
+- `pr-plan.md` has the required table columns `task_id`, `pr`, `branch`, `worktree`, `owner_agent`, `depends_on`, `risk`, `merge_policy`, and `notes`; `merge_policy` is `human-gated`, `coordinator-gated`, or `review-gated-auto`.
+- `decision-board.md` entries use `D-NNN` headings and status `example`, `pending`, `accepted`, or `rejected`. Template examples must stay `status: example` so digest/gate do not count them as real pending decisions.
+- `digests/YYYY-MM-DD-HHMM.md` is an append-only `form: trace` snapshot with fixed sections: Needs Decision, Blockers, Merge Ready, Risky PRs, Merge Order, Truth Source / Resource Risks, Stale Agents, and Plan Deviations. Empty sections say `- none`.
+- `reviews/`, `messages/`, and `claims/` are trace artifacts; see the focused references before editing or validating them.
+
 ## Command route
 
 - Project setup: `team-collab multi-agent enable`, then `team-collab multi-agent init --slug <wave>`.
@@ -41,7 +51,9 @@ The PRD is the wave brief and contract plan. `pr-plan.md` is the merge/dependenc
 
 ## Read-only vs write commands
 
-Write commands are `agent start`, `agent checkpoint`, `agent finish`, `agent close`, and `multi-agent digest`. They write docs files, exact-add only those `multi-agent/` files, auto-commit locally, and never auto-push. Other machines see the work only after an explicit docs repo push.
+Setup write commands are `multi-agent enable` and `multi-agent init`: enable updates opt-in/project scaffolding, and init creates the wave skeleton. Do not run them in a read-only review unless the user asked for setup.
+
+Lifecycle write commands are `agent start`, `agent checkpoint`, `agent finish`, `agent close`, and `multi-agent digest`. They write docs files, exact-add only those `multi-agent/` files, auto-commit locally, and never auto-push. Other machines see the work only after an explicit docs repo push.
 
 Read-only validation commands are `agent status`, `multi-agent gate`, `multi-agent plan --check`, and `lint-multi-agent`. They must not update docs files and must not trigger auto-commit.
 
