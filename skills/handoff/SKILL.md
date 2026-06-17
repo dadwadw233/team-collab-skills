@@ -1,6 +1,6 @@
 ---
 name: handoff
-requires_protocol: ">=0.5.0,<0.6.0"
+requires_protocol: ">=0.6.0,<0.7.0"
 description: Use when the user invokes `$handoff`, asks for a handoff, or asks to finish a team-collab session by updating CURRENT/NEXT/RISKS/TODO and syncing docs.
 ---
 
