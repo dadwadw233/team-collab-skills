@@ -29,6 +29,20 @@ major, minor, patch = (int(part) for part in new_version.split("."))
 protocol_range = f">={major}.{minor}.0,<{major}.{minor + 1}.0"
 
 changed = []
+adapter_marker_files = [
+    "adapters/ADAPTER-SOURCE.md",
+    "adapters/cursor/.cursor/rules/team-collab.mdc",
+    "adapters/vscode/.github/copilot-instructions.md",
+    "adapters/vscode/.github/instructions/team-collab.instructions.md",
+    "adapters/cline/.clinerules/team-collab.md",
+    "adapters/continue/.continue/rules/team-collab.md",
+    "adapters/opencode/AGENTS.md",
+    "adapters/gemini/GEMINI.md",
+    "adapters/gemini/.gemini/commands/handoff.toml",
+    "adapters/gemini/.gemini/commands/checkpoint.toml",
+    "adapters/gemini/.gemini/commands/team-progress.toml",
+    "adapters/gemini/.gemini/commands/docs-refresh.toml",
+]
 
 
 def write_if_changed(path, content):
@@ -56,6 +70,8 @@ def update_protocol_skill(path):
 def update_json_version(path):
     path = Path(path)
     data = json.loads(path.read_text(encoding="utf-8"))
+    if "version" not in data:
+        raise SystemExit(f"{path} must contain a top-level version field")
     if data.get("version") != new_version:
         data["version"] = new_version
     write_if_changed(path, json.dumps(data, ensure_ascii=False, indent=2) + "\n")
@@ -64,25 +80,26 @@ def update_json_version(path):
 def update_claude_marketplace(path):
     path = Path(path)
     data = json.loads(path.read_text(encoding="utf-8"))
-    matched = False
+    matches = []
     for plugin in data.get("plugins", []):
         if plugin.get("name") == "team-collab":
+            if "version" not in plugin:
+                raise SystemExit(f"{path} team-collab plugin metadata must contain version")
             plugin["version"] = new_version
-            matched = True
-    if not matched:
-        raise SystemExit(f"{path} does not contain team-collab plugin metadata")
+            matches.append(plugin)
+    if len(matches) != 1:
+        raise SystemExit(f"{path} must contain exactly one team-collab plugin metadata entry")
     write_if_changed(path, json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 
 
-def update_adapter_markers(root):
+def update_adapter_markers(paths):
     pattern = re.compile(r"(team-collab-protocol-source:\s*skills/protocol/SKILL\.md@)[0-9]+\.[0-9]+\.[0-9]+")
-    for path in sorted(Path(root).rglob("*")):
-        if not path.is_file():
-            continue
+    for path in [Path(item) for item in paths]:
         text = path.read_text(encoding="utf-8")
         content, count = pattern.subn(rf"\g<1>{new_version}", text)
-        if count:
-            write_if_changed(path, content)
+        if count != 1:
+            raise SystemExit(f"{path} must contain exactly one team-collab-protocol-source marker")
+        write_if_changed(path, content)
 
 
 def update_wrapper_protocol_range(path):
@@ -117,7 +134,7 @@ update_protocol_skill("skills/protocol/SKILL.md")
 update_json_version(".claude-plugin/plugin.json")
 update_json_version(".codex-plugin/plugin.json")
 update_claude_marketplace(".claude-plugin/marketplace.json")
-update_adapter_markers("adapters")
+update_adapter_markers(adapter_marker_files)
 for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh"]:
     update_wrapper_protocol_range(f"skills/{wrapper}/SKILL.md")
 update_validate_protocol_range("scripts/validate-structure.sh")
