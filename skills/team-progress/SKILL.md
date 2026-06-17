@@ -1,6 +1,6 @@
 ---
 name: team-progress
-requires_protocol: ">=0.5.0,<0.6.0"
+requires_protocol: ">=0.6.0,<0.7.0"
 description: Use when the user invokes `$team-progress`, asks to sync recent progress from other team members, or asks who has blockers or PR/MR items needing review in a team-collab project.
 ---
 

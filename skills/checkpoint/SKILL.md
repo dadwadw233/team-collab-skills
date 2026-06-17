@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-requires_protocol: ">=0.5.0,<0.6.0"
+requires_protocol: ">=0.6.0,<0.7.0"
 description: Use when the user invokes `$checkpoint`, asks for a checkpoint, or asks to update CURRENT/NEXT/RISKS/TODO without committing or pushing.
 ---
 

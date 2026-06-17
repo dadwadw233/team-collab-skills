@@ -2,7 +2,7 @@
 applyTo: "**"
 ---
 
-<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.5.5 -->
+<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0 -->
 <!-- team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh -->
 <!-- team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill -->
 
