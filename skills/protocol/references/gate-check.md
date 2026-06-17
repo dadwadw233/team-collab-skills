@@ -14,7 +14,7 @@ The body has `Scope`, `P0 (block merge)`, `P1 (block merge)`, `P2 (allowed with 
 
 1. Agent Sign-off exists: Completed is non-empty and PR matches the status file.
 2. Independent review exists when `pr-plan.merge_policy` is not `review-gated-auto`; acceptable verdict is `clean` or `p2-only`.
-3. No matching review has unresolved P0/P1; `needs-fix` blocks merge.
+3. No matching review has unresolved P0/P1; `needs-fix` and `blocked` verdicts block merge.
 4. `depends_on` PRs are merged via status `merge_commit`, unless waived in `pr-plan.md` notes.
 5. Touched files from git are within `owned_files`; out-of-scope files are plan deviations.
 6. Human-gated file patterns require a human sign-off line in PRD Human decisions or status Sign-off.
@@ -42,3 +42,5 @@ Default exit is 0 even with warnings. With `--strict`, any warning returns exit 
 ## Read-only rule
 
 Gate, plan check, and lint are validation commands. They do not write docs, do not exact-add files, and do not auto-commit. Use lifecycle commands or coordinator edits to repair what they report.
+
+`plan --check --refresh-truth-source` may run `git fetch` to refresh code/docs freshness. Omit that flag for local-only or no-network review passes.
