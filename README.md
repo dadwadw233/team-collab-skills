@@ -107,7 +107,7 @@ Team-collab is designed for progressive loading:
 | Runtime artifact | Purpose |
 |------------------|---------|
 | `skills/protocol/SKILL.md` | Slim runtime entrypoint: activation rules, quick context, hard constraints, and references to task-specific protocol files |
-| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, team progress, docs refresh, git policy, docs standards, and TODO ownership |
+| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, team progress, docs refresh, git policy, docs standards, TODO ownership, and multi-agent wave/status/gate/claim/live-session workflows |
 | `skills/handoff/SKILL.md` | Codex-friendly `$handoff <topic>` wrapper that delegates to the protocol entrypoint |
 | `skills/checkpoint/SKILL.md` | Codex-friendly `$checkpoint` wrapper that delegates to the protocol entrypoint |
 | `skills/team-progress/SKILL.md` | Codex-friendly `$team-progress <window>` wrapper for teammate progress, blockers, and PR/MR review needs |
