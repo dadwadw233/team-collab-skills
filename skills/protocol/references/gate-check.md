@@ -27,7 +27,9 @@ Output uses a table with pass, fail, skipped, and warning marks. Exit code 0 mea
 
 ## plan --check
 
-`multi-agent plan --check [--wave <slug>] [--refresh-truth-source] [--strict]` is read-only schema and cross-cutting validation. It checks PRD sections, `pr-plan.md` columns, `decision-board.md`, status/review/message/claim frontmatter, freshness, claim consistency, heartbeat staleness, contract owners, resource collisions, and Phase 4 session integrity when active.
+`multi-agent plan --check [--wave <slug>] [--refresh-truth-source] [--strict]` is read-only schema and cross-cutting validation. It checks PRD sections, `pr-plan.md` columns, `decision-board.md`, status/review/message/claim frontmatter, freshness, claim consistency, heartbeat staleness, contract owners, and resource collisions.
+
+Phase 4 live-session checks are not part of the Phase 3 CLI. Use `live-session.md` for the conceptual runtime protocol; do not rely on `plan --check` to validate tmux/session reachability.
 
 Default exit is 0 even with warnings. With `--strict`, any warning returns exit code 5.
 
@@ -35,7 +37,7 @@ Default exit is 0 even with warnings. With `--strict`, any warning returns exit 
 
 `lint-multi-agent` is warning-only and should not fail a normal local run merely because warnings exist. Warning categories:
 
-- Schema: missing wave files, incomplete status frontmatter, invalid role/status/verdict/claim/session enums, duplicate agent ids, message filename/to mismatch, claim drift.
+- Schema: missing wave files, incomplete status frontmatter, invalid role/status/verdict/claim enums, duplicate agent ids, message filename/to mismatch, claim drift.
 - Freshness: stale heartbeat, old `truth_source.checked_at`, `trust_status=stale-blocked`, inconsistent code base in one wave.
 - Conflict: duplicate contract owners, duplicate active resource claimants, unacknowledged `requires_ack` messages older than one hour.
 
