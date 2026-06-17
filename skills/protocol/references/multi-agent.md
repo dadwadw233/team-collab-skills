@@ -6,7 +6,7 @@ Use this reference when a project has opted into Team Collab multi-agent work or
 
 Run multi-agent workflows only after a strong project signal and explicit opt-in:
 
-- Project root `AGENTS.md` contains the `[multi-agent]` section written by `team-collab multi-agent enable`.
+- The CLI-resolved docs repo `AGENTS.md` (`docsPath/AGENTS.md`) contains the `[multi-agent]` section written by `team-collab multi-agent enable`; code-root `AGENTS.md` may only be a pointer.
 - The docs repo has a tracked `multi-agent/` directory; it must not be ignored.
 - The code repo should ignore the docsPath subdir for in-code-docs layouts so wave artifacts do not enter code PRs.
 - A global `~/.team-collab/config.json` helps resolution, but it is not by itself proof that every repo is multi-agent enabled.
