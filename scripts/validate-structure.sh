@@ -15,6 +15,11 @@ required_files=(
   "skills/protocol/references/todo-ownership.md"
   "skills/protocol/references/docs-refresh.md"
   "skills/protocol/references/team-progress.md"
+  "skills/protocol/references/multi-agent.md"
+  "skills/protocol/references/agent-status.md"
+  "skills/protocol/references/gate-check.md"
+  "skills/protocol/references/claim-and-freshness.md"
+  "skills/protocol/references/live-session.md"
   "skills/handoff/SKILL.md"
   "skills/checkpoint/SKILL.md"
   "skills/team-progress/SKILL.md"
@@ -141,10 +146,37 @@ required_refs = [
     "references/todo-ownership.md",
     "references/docs-refresh.md",
     "references/team-progress.md",
+    "references/multi-agent.md",
+    "references/agent-status.md",
+    "references/gate-check.md",
+    "references/claim-and-freshness.md",
+    "references/live-session.md",
 ]
 missing = [ref for ref in required_refs if ref not in text]
 if missing:
     raise SystemExit(f"SKILL.md does not route to references: {missing}")
+new_reference_checks = {
+    "skills/protocol/references/multi-agent.md": [
+        "# Multi-Agent Protocol", "Activation", "Wave layout", "Read-only vs write commands"
+    ],
+    "skills/protocol/references/agent-status.md": [
+        "# Agent Status", "agent-runs/<task-id>/<agent-id>.md", "truth_source", "Sign-off"
+    ],
+    "skills/protocol/references/gate-check.md": [
+        "# Gate Check", "10 checks", "plan --check", "lint-multi-agent", "exit code 5"
+    ],
+    "skills/protocol/references/claim-and-freshness.md": [
+        "# Claim And Freshness", "claims/tasks", "heartbeat", "truth_source", "stale-blocked"
+    ],
+    "skills/protocol/references/live-session.md": [
+        "# Live Session", "Phase 4", "tmux", "STOP / PAUSE / RUN GATE", "not implemented"
+    ],
+}
+for ref_path, phrases in new_reference_checks.items():
+    ref_text = Path(ref_path).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in ref_text:
+            raise SystemExit(f"{ref_path} must mention {phrase}")
 startup = Path("skills/protocol/references/startup-and-audit.md").read_text(encoding="utf-8")
 if "Do not scan the whole Obsidian vault" not in startup:
     raise SystemExit("startup-and-audit.md must prevent whole-vault loading")

@@ -39,6 +39,11 @@ Weak signal: a global team-collab config exists somewhere. Do not activate from 
 | Creating or substantially editing project docs, frontmatter, filenames, taxonomy | `references/docs-standards.md` |
 | `$docs-refresh <audit>` / `/docs-refresh <audit>` or updating Obsidian docs from a stale audit/dev record | `references/docs-refresh.md` |
 | `$team-progress <window>` / `/team-progress <window>` or checking teammate progress, blockers, and PR/MR review needs | `references/team-progress.md` |
+| Multi-agent opt-in, wave layout, lifecycle overview, or command boundaries | `references/multi-agent.md` |
+| Agent start/checkpoint/finish/close/status files and status schema | `references/agent-status.md` |
+| `multi-agent gate`, `plan --check`, review summaries, or `lint-multi-agent` | `references/gate-check.md` |
+| Claims, heartbeat/stale state, `truth_source`, code/docs freshness, or resource conflicts | `references/claim-and-freshness.md` |
+| Phase 4 live-session/tmux bind/watch/send/monitor concepts or message ACK safety | `references/live-session.md` |
 | Starting, claiming, completing, blocking, or reassigning TODO items | `references/todo-ownership.md` |
 
 ## Always-on constraints
