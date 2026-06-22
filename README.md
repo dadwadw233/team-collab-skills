@@ -10,9 +10,9 @@
 [![Adapters](https://img.shields.io/badge/Adapters-Cursor%20%7C%20VS%20Code%20%7C%20Cline%20%7C%20OpenCode%20%7C%20Continue%20%7C%20Gemini-0f172a)](#adapter-matrix)
 [![GitHub stars](https://img.shields.io/github/stars/dadwadw233/team-collab-skills?style=social)](https://github.com/dadwadw233/team-collab-skills)
 
-**One team documentation protocol, packaged for Claude Code, Codex, Cursor, VS Code, Cline, OpenCode, Continue, Gemini CLI, and manual workflows.**
+**One team documentation and multi-agent collaboration protocol, packaged for Claude Code, Codex, Cursor, VS Code, Cline, OpenCode, Continue, Gemini CLI, and manual workflows.**
 
-[Quick Start](#quick-start) · [Adapter Matrix](#adapter-matrix) · [Repository Map](#repository-map) · [中文简介](#中文简介)
+[Quick Start](#quick-start) · [Adapter Matrix](#adapter-matrix) · [Multi-Agent Collaboration](#multi-agent-collaboration) · [Repository Map](#repository-map) · [中文简介](#中文简介)
 
 </div>
 
@@ -27,7 +27,8 @@ AI coding sessions fail teams in boring ways: context is lost, TODO ownership is
 - **TODO ownership**: explicit `@owner` claim mechanics to avoid parallel-agent races
 - **Docs governance**: code changes go through PR/MR, shared docs go through docs MR, personal records stay under `开发记录/<用户名>/`
 - **State hygiene**: state docs stay concise, structured, and link-driven instead of becoming chronological PR/commit logs
-- **Multi-agent support**: native Claude/Codex packaging plus thin adapters for mainstream IDE/CLI tools
+- **Multi-tool packaging**: native Claude/Codex packaging plus thin adapters for mainstream IDE/CLI tools
+- **Multi-agent collaboration (v0.2.0+)**: file-backed wave protocol with agent identity, task/resource claims plus heartbeat, truth-source freshness gates, review/merge gate, and optional tmux live-session acceleration; coordinators and workers collaborate through committed files
 
 The human playbook and npm CLI live in [`embodot/team-collab-playbook`](https://gitlab.com/embodot/team-collab-playbook). This repository is the **agent runtime source of truth**.
 
@@ -118,6 +119,27 @@ Team-collab is designed for progressive loading:
 
 ---
 
+## Multi-Agent Collaboration
+
+v0.2.0 promotes multi-agent work into a file-backed wave model: a coordinator plans the wave, worker agents claim tasks/resources, per-agent status plus claims carry the heartbeat, and gate checks protect merge readiness. Files are the truth; tmux live sessions only accelerate delivery and never replace committed status, messages, reviews, claims, or digests.
+
+CLI surface from `@embodot/collab`:
+
+- `multi-agent enable|init`
+- `agent start|checkpoint|finish|close|status`
+- `multi-agent digest|gate|plan --check|monitor`
+- `agent bind-session|watch|send`
+
+Protocol references:
+
+- [Multi-agent wave layout](./skills/protocol/references/multi-agent.md)
+- [Gate checks and plan validation](./skills/protocol/references/gate-check.md)
+- [Agent status lifecycle](./skills/protocol/references/agent-status.md)
+- [Live-session accelerator](./skills/protocol/references/live-session.md)
+- [Claims and freshness gates](./skills/protocol/references/claim-and-freshness.md)
+
+---
+
 ## How It Works
 
 ```text
@@ -140,6 +162,25 @@ Team-collab is designed for progressive loading:
       CURRENT · NEXT · RISKS · TODO · _handoffs · 开发记录
 ```
 
+```text
+                     coordinator
+                          │
+                          ▼
+       wave files: PRD · pr-plan · claims · decisions
+                          │
+              ┌───────────┼───────────┐
+              ▼           ▼           ▼
+       implementer   reviewer      tester
+          start       status       status
+            │           │           │
+            └──── checkpoint ─ finish ────┐
+                                           ▼
+                             gate: sign-off · review · claims · freshness
+                                           │
+                                           ▼
+                                         merge
+```
+
 ---
 
 ## Repository Map
@@ -159,7 +200,8 @@ team-collab-skills/
 ├── assets/                      # README visuals
 ├── scripts/                     # Repo validation helpers
 └── skills/
-    ├── protocol/                # Slim protocol entrypoint, references, templates
+    ├── protocol/                # Slim entrypoint, references, templates, multi-agent wave workflows
+    │   └── references/          # Startup/docs modules plus multi-agent wave/status/gate/claim/live-session
     ├── handoff/                 # Codex wrapper
     ├── checkpoint/              # Codex wrapper
     ├── team-progress/           # Codex wrapper
@@ -194,6 +236,8 @@ scripts/validate-structure.sh
 ## 中文简介
 
 `team-collab-skills` 是团队协作文档协议的 **AI runtime 仓库**。它把 handoff、checkpoint、team-progress、docs-refresh、CURRENT/NEXT/RISKS/TODO、TODO `@owner` 认领、Obsidian 项目文档规范、代码 PR/MR 与文档 MR 边界，封装成 Claude/Codex 可安装的 skill/plugin，同时为 Cursor、VS Code、Cline、OpenCode、Continue、Gemini CLI 提供轻量 adapter。
+
+v0.2.0 起，它也把多 agent wave 协作提升为一等协议：coordinator 规划 wave，worker 通过 status/claims/heartbeat 协作，gate 用 review、claim 与 freshness 检查守住 merge，tmux live-session 只是加速层，文件仍是唯一真相源。
 
 边界很明确：
 
