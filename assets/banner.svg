@@ -91,7 +91,6 @@
     <g>
       <rect x="96" y="344" width="742" height="40" rx="20" fill="#07111F" fill-opacity="0.62" stroke="#14B8A6" stroke-opacity="0.34"/>
       <text x="124" y="370" fill="#E0F2FE" font-size="17" font-weight="800">Claude · Codex · Cursor · VS Code · Cline · OpenCode · Continue · Gemini</text>
-      <text x="688" y="370" fill="#FDE68A" font-size="15" font-weight="800">runs on every tool</text>
     </g>
   </g>
 </svg>
