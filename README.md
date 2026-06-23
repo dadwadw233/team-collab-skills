@@ -10,9 +10,9 @@
 [![Adapters](https://img.shields.io/badge/Adapters-Cursor%20%7C%20VS%20Code%20%7C%20Cline%20%7C%20OpenCode%20%7C%20Continue%20%7C%20Gemini-0f172a)](#adapter-matrix)
 [![GitHub stars](https://img.shields.io/github/stars/dadwadw233/team-collab-skills?style=social)](https://github.com/dadwadw233/team-collab-skills)
 
-**One team documentation protocol, packaged for Claude Code, Codex, Cursor, VS Code, Cline, OpenCode, Continue, Gemini CLI, and manual workflows.**
+**Keep your AI coding agents on the same page — a shared, file-based way to track project state, hand off work, and let several agents collaborate. Installable for Claude Code, Codex, Cursor, VS Code, Cline, OpenCode, Continue, Gemini CLI, and manual workflows.**
 
-[Quick Start](#quick-start) · [Adapter Matrix](#adapter-matrix) · [Repository Map](#repository-map) · [中文简介](#中文简介)
+[Quick Start](#quick-start) · [Adapter Matrix](#adapter-matrix) · [Multi-Agent Collaboration](#multi-agent-collaboration) · [中文简介](#中文简介)
 
 </div>
 
@@ -20,18 +20,19 @@
 
 ## Why This Exists
 
-AI coding sessions fail teams in boring ways: context is lost, TODO ownership is unclear, docs drift, and handoffs become chat archaeology. `team-collab-skills` turns the operating rules into reusable agent runtime artifacts:
+When a team leans on AI coding agents, work slips through the cracks between sessions: nobody is sure what state the project is in, who owns which TODO, why a past decision was made, or what the last session actually did. Handoffs turn into scrolling back through old chat logs.
 
-- **State quartet**: `CURRENT.md`, `NEXT.md`, `RISKS.md`, `TODO.md`
-- **Session rituals**: `$checkpoint` during long work, `$handoff <topic>` at the end, `$team-progress <window>` for recent teammate progress, `$docs-refresh <audit-doc>` when docs are stale
-- **TODO ownership**: explicit `@owner` claim mechanics to avoid parallel-agent races
-- **Docs governance**: code changes go through PR/MR, shared docs go through docs MR, personal records stay under `开发记录/<用户名>/`
-- **State hygiene**: state docs stay concise, structured, and link-driven instead of becoming chronological PR/commit logs
-- **Multi-agent support**: native Claude/Codex packaging plus thin adapters for mainstream IDE/CLI tools
+team-collab-skills gives your agents a shared, file-based routine so any agent — or teammate — can pick up where the last one left off:
 
-The human playbook and npm CLI live in [`embodot/team-collab-playbook`](https://gitlab.com/embodot/team-collab-playbook). This repository is the **agent runtime source of truth**.
+- **A few status files as the single source of truth** — `CURRENT.md` (where things stand), `NEXT.md` (what's next), `RISKS.md`, and `TODO.md`. Everything important lives in the repo, not in a chat window.
+- **Simple session commands** — `$checkpoint` to save progress mid-task, `$handoff` to wrap up a session, `$team-progress` to see what teammates did recently, and `$docs-refresh` to bring stale docs back up to date.
+- **Clear TODO ownership** — a TODO can be claimed with `@owner` so two agents don't grab the same task at once.
+- **Sensible git habits** — code changes go through pull/merge requests, shared docs go through their own doc PRs, and personal working notes stay in your own folder.
+- **Readable status docs** — the status files are kept short and current instead of growing into an endless changelog.
+- **Works across tools** — a native plugin for Claude Code and Codex, plus thin adapter files for Cursor, VS Code, Cline, OpenCode, Continue, and Gemini CLI.
+- **Multi-agent collaboration (v0.2.0+)** — several agents can work one batch of tasks (a *wave*) at the same time, coordinating entirely through committed files. See [Multi-Agent Collaboration](#multi-agent-collaboration) below.
 
-Runtime scope is intentionally narrow: this repo ships skills, protocol references, adapters, manifests, scripts, and user-facing README/license material. Architecture audits, implementation plans, brainstorms, and other process notes belong outside the public runtime tree; local drafts may live in the gitignored `_meta/` directory.
+This repository is the **source of truth that agents actually load at runtime**: the skills, protocol references, adapters, and manifests. A companion command-line tool, [`@embodot/collab`](https://www.npmjs.com/package/@embodot/collab), is published on npm and adds an installer, health checks, and the multi-agent commands.
 
 ---
 
@@ -44,7 +45,7 @@ claude plugin marketplace add dadwadw233/team-collab-skills
 claude plugin install team-collab@team-collab-skills
 ```
 
-Claude loads the protocol as `team-collab:team-collab-protocol` when a strong team-project signal is present, such as `obsidian-docs/`, project `AGENTS.md`, CURRENT/NEXT/RISKS/TODO references, or explicit handoff/checkpoint/docs-governance requests.
+Claude loads the protocol automatically when it sees a clear team-project signal — for example an `obsidian-docs/` folder, a project `AGENTS.md`, references to `CURRENT`/`NEXT`/`RISKS`/`TODO`, or a direct request like "do a handoff".
 
 ### Codex CLI
 
@@ -52,7 +53,7 @@ Claude loads the protocol as `team-collab:team-collab-protocol` when a strong te
 codex plugin marketplace add https://github.com/dadwadw233/team-collab-skills.git
 ```
 
-Codex entrypoints:
+Then use the entrypoints:
 
 ```text
 $checkpoint
@@ -61,11 +62,11 @@ $team-progress 24h
 $docs-refresh <audit-doc-or-topic>
 ```
 
-Codex may not support arbitrary custom top-level slash commands. If `/handoff`, `/checkpoint`, `/team-progress`, or `/docs-refresh` reaches the model as plain text, the global/project `AGENTS.md` pointer should treat it as equivalent to the `$...` form.
+If Codex passes `/handoff`, `/checkpoint`, `/team-progress`, or `/docs-refresh` through as plain text, treat it the same as the `$...` form.
 
-### Team CLI Installer
+### With the CLI (optional)
 
-If your team uses the playbook package:
+If you also use the [`@embodot/collab`](https://www.npmjs.com/package/@embodot/collab) command-line tool, it can install these skills for every agent at once and check your setup:
 
 ```bash
 npm install -g @embodot/collab@latest
@@ -77,134 +78,127 @@ team-collab doctor --project <project>
 
 ## Adapter Matrix
 
-| Tool | Native shape | Files shipped here | Install strategy |
-|------|--------------|--------------------|------------------|
+Adapter files are deliberately **thin pointers** back to the protocol — don't copy the full protocol into each tool's rule file. The source of truth is `skills/protocol/`.
+
+| Tool | Native shape | Files shipped here | How to install |
+|------|--------------|--------------------|----------------|
 | **Claude Code** | Plugin marketplace + skills | `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `skills/*/SKILL.md` | `claude plugin marketplace add dadwadw233/team-collab-skills` |
 | **Codex CLI** | Marketplace + plugin manifest | `.agents/plugins/marketplace.json`, `.codex-plugin/plugin.json`, `skills/*` | `codex plugin marketplace add https://github.com/dadwadw233/team-collab-skills.git` |
-| **Cursor** | Project rules | `adapters/cursor/.cursor/rules/team-collab.mdc` | Copy into project when Cursor is used |
-| **VS Code / Copilot** | Custom instructions | `adapters/vscode/.github/copilot-instructions.md`, `.github/instructions/team-collab.instructions.md` | Copy into project when Copilot is used |
-| **Cline** | Workspace rules | `adapters/cline/.clinerules/team-collab.md` | Copy into project when Cline is used |
-| **OpenCode** | `AGENTS.md` + `opencode.json` instructions | `adapters/opencode/AGENTS.md`, `adapters/opencode/opencode.json` | Prefer root `AGENTS.md`; use `opencode.json` for explicit references |
+| **Cursor** | Project rules | `adapters/cursor/.cursor/rules/team-collab.mdc` | Copy into your project |
+| **VS Code / Copilot** | Custom instructions | `adapters/vscode/.github/copilot-instructions.md`, `.github/instructions/team-collab.instructions.md` | Copy into your project |
+| **Cline** | Workspace rules | `adapters/cline/.clinerules/team-collab.md` | Copy into your project |
+| **OpenCode** | `AGENTS.md` + `opencode.json` | `adapters/opencode/AGENTS.md`, `adapters/opencode/opencode.json` | Prefer root `AGENTS.md`; use `opencode.json` for explicit references |
 | **Continue** | Local rules | `adapters/continue/.continue/rules/team-collab.md` | Copy into `.continue/rules/` |
-| **Gemini CLI** | `GEMINI.md` + custom commands | `adapters/gemini/GEMINI.md`, `.gemini/commands/*.toml` | Copy into project for `/handoff`, `/checkpoint`, `/team-progress`, and `/docs-refresh` commands |
-| **Manual** | Markdown + shell helper | `skills/protocol/SKILL.md`, `skills/protocol/scripts/handoff-manual.sh` | Read and run manually if no skill-native agent is available |
-
-Adapter files are intentionally **thin pointers**. Do not fork the protocol into every tool-specific rule file; keep `skills/protocol/SKILL.md` and `skills/protocol/references/` as the source of truth.
-
-## Context Budget
-
-Team-collab is designed for progressive loading:
-
-- Global pointers only detect strong team-project signals and route to the skill.
-- Normal team-project startup reads repo `AGENTS.md` plus `CURRENT.md`, `RISKS.md`, `NEXT.md`, and `TODO.md`.
-- Handoffs, personal dev records, design docs, the full playbook, and the wider Obsidian vault load only when a task needs them.
-- A global `~/.team-collab/config.json` is not enough to activate the protocol in unrelated repositories.
+| **Gemini CLI** | `GEMINI.md` + custom commands | `adapters/gemini/GEMINI.md`, `.gemini/commands/*.toml` | Copy into your project for the `/handoff`, `/checkpoint`, `/team-progress`, and `/docs-refresh` commands |
+| **Manual** | Markdown + shell helper | `skills/protocol/SKILL.md`, `skills/protocol/scripts/handoff-manual.sh` | Read and run by hand if no skill-native agent is available |
 
 ---
 
-## What Lives Here
+## What You Get
 
-| Runtime artifact | Purpose |
-|------------------|---------|
-| `skills/protocol/SKILL.md` | Slim runtime entrypoint: activation rules, quick context, hard constraints, and references to task-specific protocol files |
-| `skills/protocol/references/` | Detailed protocol modules for startup/audit, handoff, checkpoint, team progress, docs refresh, git policy, docs standards, TODO ownership, and multi-agent wave/status/gate/claim/live-session workflows |
-| `skills/handoff/SKILL.md` | Codex-friendly `$handoff <topic>` wrapper that delegates to the protocol entrypoint |
-| `skills/checkpoint/SKILL.md` | Codex-friendly `$checkpoint` wrapper that delegates to the protocol entrypoint |
-| `skills/team-progress/SKILL.md` | Codex-friendly `$team-progress <window>` wrapper for teammate progress, blockers, and PR/MR review needs |
-| `skills/docs-refresh/SKILL.md` | Codex-friendly `$docs-refresh <audit-doc>` wrapper for stale Obsidian docs refresh |
-| `skills/protocol/templates/` | Baseline project-doc templates for state, trace, and decision documents |
-| `skills/protocol/scripts/handoff-manual.sh` | Shell-only fallback for manual handoff flow |
-| `adapters/` | Tool-specific thin pointers for Cursor, VS Code, Cline, OpenCode, Continue, and Gemini CLI |
+| Skill | What it does |
+|-------|--------------|
+| `skills/protocol/SKILL.md` | The main entrypoint: when to activate, the core rules, and links to the detailed protocol modules in `skills/protocol/references/` |
+| `skills/handoff/SKILL.md` | `$handoff <topic>` — wrap up a session and update the status files |
+| `skills/checkpoint/SKILL.md` | `$checkpoint` — save progress mid-task without ending the session |
+| `skills/team-progress/SKILL.md` | `$team-progress <window>` — summarize recent teammate progress, blockers, and reviews to look at |
+| `skills/docs-refresh/SKILL.md` | `$docs-refresh <audit-doc>` — bring stale project docs back up to date |
+| `skills/protocol/templates/` | Starter templates for the status, history, and decision docs |
+| `adapters/` | Thin pointers for Cursor, VS Code, Cline, OpenCode, Continue, and Gemini CLI |
+
+The protocol is designed to load **progressively** — global pointers only kick in on a clear team-project signal, normal startup reads just the four status files, and heavier material (handoffs, design docs, history) loads only when a task actually needs it.
+
+---
+
+## Multi-Agent Collaboration
+
+From v0.2.0, several agents can work the same batch of tasks at once. The unit of work is a **wave**, and everything is coordinated through committed files — never through a live chat or a background service.
+
+- A **coordinator** plans the wave and writes the plan (`PRD`, `pr-plan`, decisions) into the wave folder.
+- Each **worker agent** has its own identity and **claims** the tasks and resources it owns, so two agents never step on the same work. A periodic heartbeat shows a claim is still active.
+- Before anything merges, a **gate** check confirms the task is signed off, reviewed, and based on up-to-date code and docs.
+- An optional **tmux live session** can speed up coordination, but it never becomes the source of truth — the committed files always do.
+
+CLI commands (from [`@embodot/collab`](https://www.npmjs.com/package/@embodot/collab)):
+
+- `multi-agent enable | init` — turn on multi-agent mode and create a wave
+- `agent start | checkpoint | finish | close | status` — a worker's task lifecycle
+- `multi-agent digest | gate | plan --check | monitor` — coordinator overview and merge gating
+- `agent bind-session | watch | send` — the optional live-session layer
+
+Reference docs: [wave layout](./skills/protocol/references/multi-agent.md) · [gate checks](./skills/protocol/references/gate-check.md) · [agent status lifecycle](./skills/protocol/references/agent-status.md) · [live session](./skills/protocol/references/live-session.md) · [claims & freshness](./skills/protocol/references/claim-and-freshness.md)
 
 ---
 
 ## How It Works
 
+Single-agent flow — keep one project's state straight across sessions:
+
 ```text
                  team project signal
-        obsidian-docs/ · AGENTS.md · user asks handoff
+        obsidian-docs/ · AGENTS.md · "do a handoff"
                            │
                            ▼
              ┌──────────────────────────┐
-             │ team-collab-protocol     │
-             │ source of truth          │
+             │ team-collab protocol      │
+             │ (source of truth)         │
              └────────────┬─────────────┘
                           │
           ┌───────────────┼────────────────┐
           ▼               ▼                ▼
    Claude plugin     Codex marketplace   IDE/CLI adapters
-   skills/*          $handoff/$checkpoint/$team-progress/$docs-refresh
           │               │                │
           └───────────────┼────────────────┘
                           ▼
-      CURRENT · NEXT · RISKS · TODO · _handoffs · 开发记录
+              CURRENT · NEXT · RISKS · TODO
 ```
 
----
-
-## Repository Map
+Multi-agent flow — several agents share one wave through files:
 
 ```text
-team-collab-skills/
-├── .claude-plugin/              # Claude Code marketplace + plugin metadata
-├── .agents/plugins/             # Codex marketplace metadata
-├── .codex-plugin/               # Codex plugin metadata
-├── adapters/                    # Thin pointers for non-skill-native tools
-│   ├── cursor/
-│   ├── vscode/
-│   ├── cline/
-│   ├── opencode/
-│   ├── continue/
-│   └── gemini/
-├── assets/                      # README visuals
-├── scripts/                     # Repo validation helpers
-└── skills/
-    ├── protocol/                # Slim protocol entrypoint, references, templates
-    ├── handoff/                 # Codex wrapper
-    ├── checkpoint/              # Codex wrapper
-    ├── team-progress/           # Codex wrapper
-    └── docs-refresh/            # Codex wrapper
+                     coordinator
+                          │
+                          ▼
+       wave files: PRD · pr-plan · claims · decisions
+                          │
+              ┌───────────┼───────────┐
+              ▼           ▼           ▼
+       implementer   reviewer      tester
+              │           │           │
+              └──── checkpoint · finish ────┐
+                                            ▼
+                       gate: sign-off · review · claims · freshness
+                                            │
+                                            ▼
+                                          merge
 ```
-
----
-
-## Validate
-
-```bash
-scripts/validate-structure.sh
-git diff --check
-
-# Codex marketplace smoke test
-CODEX_HOME="$(mktemp -d)" codex plugin marketplace add "$PWD"
-```
-
-`validate-structure.sh` checks required manifests/adapters and ensures runtime files do not point at the human playbook repository.
-
-## Release
-
-```bash
-scripts/bump-version.sh X.Y.Z
-scripts/validate-structure.sh
-```
-
-`skills/protocol/SKILL.md` is the protocol version source of truth. The bump script rewrites plugin manifests, adapter drift markers, wrapper protocol ranges, and validation constants, then leaves the diff for manual review.
 
 ---
 
 ## 中文简介
 
-`team-collab-skills` 是团队协作文档协议的 **AI runtime 仓库**。它把 handoff、checkpoint、team-progress、docs-refresh、CURRENT/NEXT/RISKS/TODO、TODO `@owner` 认领、Obsidian 项目文档规范、代码 PR/MR 与文档 MR 边界，封装成 Claude/Codex 可安装的 skill/plugin，同时为 Cursor、VS Code、Cline、OpenCode、Continue、Gemini CLI 提供轻量 adapter。
+team-collab-skills 帮你的 AI 编码 agent 在多次会话之间不丢上下文。它把项目状态、任务交接、决策记录都放进仓库里的几个文件，这样换一个 agent（或换一个人）都能接着上一次继续，而不用翻聊天记录。
 
-边界很明确：
+核心内容：
 
-- **这里**放 agent runtime：skills、plugins、marketplace manifests、adapter templates。
-- **playbook** 放人类 SOP、npm CLI、installer、doctor、Feishu/GitLab 自动化。
+- **四个状态文件**作为唯一真相源：`CURRENT.md`（当前进展）、`NEXT.md`（下一步）、`RISKS.md`、`TODO.md`。
+- **几个会话命令**：`$checkpoint`（中途存档）、`$handoff`（结束会话并更新状态）、`$team-progress`（看队友近期进展）、`$docs-refresh`（把过时文档刷新到最新）。
+- **TODO 认领**：用 `@owner` 标记归属，避免两个 agent 抢同一个任务。
+- **简单的 git 约定**：代码走 PR/MR，共享文档走文档 PR，个人笔记放自己的目录。
+- **多工具支持**：Claude Code、Codex 原生插件，外加 Cursor、VS Code、Cline、OpenCode、Continue、Gemini CLI 的轻量 adapter。
+- **多 agent 协作（v0.2.0 起）**：多个 agent 可以同时做同一批任务（一个 *wave*），全程通过提交的文件协作——coordinator 规划 wave，worker 各自认领任务，gate 在合并前检查签收/评审/新鲜度；tmux live session 只是加速层，文件始终是唯一真相源。
+
+配套的命令行工具 [`@embodot/collab`](https://www.npmjs.com/package/@embodot/collab) 已发布到 npm，提供安装器、健康检查和多 agent 命令。
 
 ---
 
 ## Related
 
-- [team-collab-playbook](https://gitlab.com/embodot/team-collab-playbook) — human SOP and `@embodot/collab` CLI
-- [agentskills.io specification](https://agentskills.io/specification) — open skill format used by the protocol skill
+- [`@embodot/collab`](https://www.npmjs.com/package/@embodot/collab) — the companion command-line tool (installer, health checks, multi-agent commands)
+- [agentskills.io specification](https://agentskills.io/specification) — the open skill format this protocol uses
 - [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) — companion Obsidian Markdown/Canvas/Base skills
-- [AGENTS.md standard](https://agents.md/) — cross-agent project instruction format
+- [AGENTS.md standard](https://agents.md/) — the cross-agent project instruction format
+
+---
+
+Contributing and release steps live in [CONTRIBUTING.md](./CONTRIBUTING.md).
