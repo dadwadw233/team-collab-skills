@@ -1,0 +1,10 @@
+# team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0
+# team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh, wave, gate, digest
+# team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill
+
+description = "Run the merge-gate check for a multi-agent task."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as the PR number (e.g. `--pr 42` or `42`): {{args}}
+
+Infer the wave from the current directory if possible, otherwise ask. Run `team-collab multi-agent gate --pr <number> [--wave <slug>]`. Report the result: exit 0 means it may merge (possibly with warnings); exit 5 means a check failed — summarize which. Do not merge anything yourself. Read references/gate-check.md for details.
+"""

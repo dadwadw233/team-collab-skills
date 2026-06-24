@@ -42,6 +42,9 @@ adapter_marker_files = [
     "adapters/gemini/.gemini/commands/checkpoint.toml",
     "adapters/gemini/.gemini/commands/team-progress.toml",
     "adapters/gemini/.gemini/commands/docs-refresh.toml",
+    "adapters/gemini/.gemini/commands/wave.toml",
+    "adapters/gemini/.gemini/commands/gate.toml",
+    "adapters/gemini/.gemini/commands/digest.toml",
 ]
 
 
@@ -135,7 +138,7 @@ update_json_version(".claude-plugin/plugin.json")
 update_json_version(".codex-plugin/plugin.json")
 update_claude_marketplace(".claude-plugin/marketplace.json")
 update_adapter_markers(adapter_marker_files)
-for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh"]:
+for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh", "wave", "gate", "digest"]:
     update_wrapper_protocol_range(f"skills/{wrapper}/SKILL.md")
 update_validate_protocol_range("scripts/validate-structure.sh")
 

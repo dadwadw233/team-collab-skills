@@ -1,0 +1,10 @@
+# team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0
+# team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh, wave, gate, digest
+# team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill
+
+description = "Show a multi-agent wave progress digest."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as the wave slug: {{args}}
+
+Infer the wave from the current directory if no slug is given, otherwise ask. Run `team-collab multi-agent digest --wave <slug>`. Present the digest and call attention to Needs Decision, Blockers, and Stale Agents. Do not edit any files. Read references/multi-agent.md and the digest section for details.
+"""

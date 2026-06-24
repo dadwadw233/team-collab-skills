@@ -1,0 +1,10 @@
+# team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0
+# team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh, wave, gate, digest
+# team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill
+
+description = "Start or enter a multi-agent wave."
+prompt = """
+Use the team-collab protocol. Treat the user arguments as a wave slug or a one-line goal: {{args}}
+
+If the project does not have multi-agent mode enabled, run `team-collab multi-agent enable`. If the wave folder does not exist, create it with `team-collab multi-agent init --slug <slug>`. If the argument was a free-text goal, draft a first cut of PRD.md and pr-plan.md and confirm with the user. Read references/multi-agent.md for the wave layout. Do not improvise task assignments from this command alone.
+"""
