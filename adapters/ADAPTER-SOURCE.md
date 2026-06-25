@@ -4,7 +4,7 @@ All thin adapters in this directory are pointers to the runtime protocol, not in
 
 Required marker fields:
 
-- `team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0`
+- `team-collab-protocol-source: skills/protocol/SKILL.md@0.6.1`
 - `team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh`
 - `team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill`
 

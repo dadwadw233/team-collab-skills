@@ -3,7 +3,7 @@ description: Apply the team-collab protocol in repos that opt into shared Obsidi
 alwaysApply: true
 ---
 
-<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.6.0 -->
+<!-- team-collab-protocol-source: skills/protocol/SKILL.md@0.6.1 -->
 <!-- team-collab-required-commands: handoff, checkpoint, team-progress, docs-refresh -->
 <!-- team-collab-source-of-truth: repo AGENTS.md + installed team-collab-protocol skill -->
 
