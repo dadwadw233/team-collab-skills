@@ -45,6 +45,9 @@ required_files=(
   "adapters/gemini/.gemini/commands/checkpoint.toml"
   "adapters/gemini/.gemini/commands/team-progress.toml"
   "adapters/gemini/.gemini/commands/docs-refresh.toml"
+  "adapters/gemini/.gemini/commands/wave.toml"
+  "adapters/gemini/.gemini/commands/gate.toml"
+  "adapters/gemini/.gemini/commands/digest.toml"
 )
 
 for path in "${required_files[@]}"; do

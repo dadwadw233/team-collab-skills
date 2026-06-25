@@ -18,18 +18,20 @@ A wave is a batch of multi-agent work coordinated entirely through committed fil
 
 ## Required behavior
 
-1. Treat the first whitespace-separated token after `$wave` as the wave slug if it looks like a slug (letters, digits, dashes). Otherwise, derive a slug from the goal text and confirm it with the user.
-2. Ensure the project has multi-agent mode enabled. If it does not, run:
+1. Follow the installed `team-collab-protocol` skill and its `references/multi-agent.md` flow. If the protocol skill is not available in the current session, read `~/.codex/skills/team-collab-protocol/SKILL.md`; if that file is missing, stop and tell the user to run `team-collab install-skills --agent codex --force`.
+2. Before running any CLI command, check `command -v team-collab`. If missing, stop and tell the user to install the CLI with `npm install -g @embodot/collab@latest`, then refresh skills with `team-collab install-skills --agent codex --force` if needed.
+3. Treat the text after `$wave` as a slug only when it is a single token matching `^[a-z][a-z0-9-]{2,63}$`. Otherwise, treat it as a goal, derive a slug, and confirm the slug with the user before creating anything.
+4. Ensure the project has multi-agent mode enabled. If it does not, run:
    ```bash
    team-collab multi-agent enable
    ```
-3. If the wave folder does not yet exist, create it:
+5. If the wave folder does not yet exist, create it:
    ```bash
    team-collab multi-agent init --slug <slug>
    ```
    If `<slug-or-goal>` was a free-text goal rather than a slug, read the generated `multi-agent/<slug>/PRD.md` and `pr-plan.md` and draft a first cut of the wave plan (goal, task breakdown, suggested roles) into them, then tell the user what you drafted and ask for confirmation.
-4. If the wave folder already exists, just orient: read `multi-agent/<slug>/PRD.md`, `pr-plan.md`, and any existing `agent-runs/**`, then summarize the current wave state to the user.
-5. Follow `references/multi-agent.md` for the wave layout, ownership, and command boundaries. Do not improvise task assignments from this wrapper alone — present the plan and let the user (or `$assign` / `$gate`) drive the next step.
+6. If the wave folder already exists, just orient: read `multi-agent/<slug>/PRD.md`, `pr-plan.md`, and any existing `agent-runs/**`, then summarize the current wave state to the user.
+7. Follow `references/multi-agent.md` for the wave layout, ownership, and command boundaries. Do not improvise task assignments from this wrapper alone — present the plan and let the user, coordinator, or CLI task lifecycle commands drive the next step.
 
 ## Compatibility note
 

@@ -18,14 +18,17 @@ The digest aggregates a whole wave into one view: what needs a decision, what's 
 
 ## Required behavior
 
-1. Treat the first token after `$digest` as the wave slug. If none is given, infer the wave from the current working directory (`multi-agent/<slug>/` subtree). If still unknown, ask which wave.
-2. Run the digest:
+1. Follow the installed `team-collab-protocol` skill and its `references/multi-agent.md` flow. If the protocol skill is not available in the current session, read `~/.codex/skills/team-collab-protocol/SKILL.md`; if that file is missing, stop and tell the user to run `team-collab install-skills --agent codex --force`.
+2. Before running any CLI command, check `command -v team-collab`. If missing, stop and tell the user to install the CLI with `npm install -g @embodot/collab@latest`, then refresh skills with `team-collab install-skills --agent codex --force` if needed.
+3. Treat the first token after `$digest` as the wave slug. If none is given, infer the wave from the current working directory (`multi-agent/<slug>/` subtree). If still unknown, ask which wave.
+4. Run the digest:
    ```bash
    team-collab multi-agent digest --wave <slug>
    ```
    If the user asked for a fresher view of code/docs state, add `--refresh-truth-source`. If they asked about a specific time window, add `--since <duration>`.
-3. Present the digest output to the user. Call attention to anything in the Needs Decision, Blockers, or Stale Agents sections, since those are the items most likely to need the user's input.
-4. Do not edit any files. The digest is read-only. If a decision or unblock is needed, tell the user what's blocking and let them direct the next step.
+5. Present the digest output to the user. Call attention to anything in the Needs Decision, Blockers, or Stale Agents sections, since those are the items most likely to need the user's input.
+6. Be clear about write semantics: the CLI creates `multi-agent/<slug>/digests/*.md` and makes a local docs commit; `--refresh-truth-source` may also update agent status files. It does not auto-push, so cross-machine visibility requires an explicit docs repo push.
+7. If a decision or unblock is needed, tell the user what's blocking and let them direct the next step.
 
 ## Compatibility note
 
