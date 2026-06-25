@@ -40,6 +40,7 @@ Weak signal: a global team-collab config exists somewhere. Do not activate from 
 | `$docs-refresh <audit>` / `/docs-refresh <audit>` or updating Obsidian docs from a stale audit/dev record | `references/docs-refresh.md` |
 | `$team-progress <window>` / `/team-progress <window>` or checking teammate progress, blockers, and PR/MR review needs | `references/team-progress.md` |
 | Multi-agent opt-in, wave layout, lifecycle overview, or command boundaries | `references/multi-agent.md` |
+| `$wave` (start/enter wave), `$digest <slug>` (wave status), `$gate --pr <n>` (merge-gate) | `references/multi-agent.md` / `references/gate-check.md` |
 | Agent start/checkpoint/finish/close/status files and status schema | `references/agent-status.md` |
 | `multi-agent gate`, `plan --check`, review summaries, or `lint-multi-agent` | `references/gate-check.md` |
 | Claims, heartbeat/stale state, `truth_source`, code/docs freshness, or resource conflicts | `references/claim-and-freshness.md` |

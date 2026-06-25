@@ -26,6 +26,12 @@ required_files=(
   "skills/team-progress/agents/openai.yaml"
   "skills/docs-refresh/SKILL.md"
   "skills/docs-refresh/agents/openai.yaml"
+  "skills/wave/SKILL.md"
+  "skills/wave/agents/openai.yaml"
+  "skills/gate/SKILL.md"
+  "skills/gate/agents/openai.yaml"
+  "skills/digest/SKILL.md"
+  "skills/digest/agents/openai.yaml"
   "adapters/ADAPTER-SOURCE.md"
   "adapters/cursor/.cursor/rules/team-collab.mdc"
   "adapters/vscode/.github/copilot-instructions.md"
@@ -39,6 +45,9 @@ required_files=(
   "adapters/gemini/.gemini/commands/checkpoint.toml"
   "adapters/gemini/.gemini/commands/team-progress.toml"
   "adapters/gemini/.gemini/commands/docs-refresh.toml"
+  "adapters/gemini/.gemini/commands/wave.toml"
+  "adapters/gemini/.gemini/commands/gate.toml"
+  "adapters/gemini/.gemini/commands/digest.toml"
 )
 
 for path in "${required_files[@]}"; do
@@ -117,7 +126,7 @@ protocol_meta = frontmatter("skills/protocol/SKILL.md")
 PROTOCOL_VERSION = protocol_meta.get("version")
 if not PROTOCOL_VERSION or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", PROTOCOL_VERSION):
     raise SystemExit("team-collab-protocol skill version metadata is missing or invalid")
-for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh"]:
+for wrapper in ["handoff", "checkpoint", "team-progress", "docs-refresh", "wave", "gate", "digest"]:
     metadata = frontmatter(f"skills/{wrapper}/SKILL.md")
     if metadata.get("requires_protocol") != PROTOCOL_RANGE:
         raise SystemExit(f"{wrapper} wrapper must declare requires_protocol: \"{PROTOCOL_RANGE}\"")
@@ -213,6 +222,9 @@ adapter_files = [
     "adapters/gemini/.gemini/commands/checkpoint.toml",
     "adapters/gemini/.gemini/commands/team-progress.toml",
     "adapters/gemini/.gemini/commands/docs-refresh.toml",
+    "adapters/gemini/.gemini/commands/wave.toml",
+    "adapters/gemini/.gemini/commands/gate.toml",
+    "adapters/gemini/.gemini/commands/digest.toml",
 ]
 pointer_docs = [adapter for adapter in adapter_files if not adapter.endswith(".toml")]
 required_marker_phrases = [

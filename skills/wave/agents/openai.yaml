@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wave"
+  short_description: "Start or enter a multi-agent wave"
+  default_prompt: "$wave <slug-or-goal>"

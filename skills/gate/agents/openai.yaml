@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gate"
+  short_description: "Merge-gate check for a multi-agent task"
+  default_prompt: "$gate --pr <number>"

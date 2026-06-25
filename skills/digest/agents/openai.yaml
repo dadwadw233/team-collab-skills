@@ -1,0 +1,4 @@
+interface:
+  display_name: "Digest"
+  short_description: "Wave progress digest"
+  default_prompt: "$digest <slug>"
